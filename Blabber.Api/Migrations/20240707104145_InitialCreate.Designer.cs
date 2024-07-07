@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blabber.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240706104519_InitialCreate")]
+    [Migration("20240707104145_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,25 +20,25 @@ namespace Blabber.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
 
-            modelBuilder.Entity("ApplicationUserApplicationUser", b =>
+            modelBuilder.Entity("AuthorAuthor", b =>
                 {
-                    b.Property<string>("FollowersId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("FollowersId")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("FollowingId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("FollowingId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("FollowersId", "FollowingId");
 
                     b.HasIndex("FollowingId");
 
-                    b.ToTable("UserFollowers", (string)null);
+                    b.ToTable("Followers", (string)null);
                 });
 
-            modelBuilder.Entity("ApplicationUserBlab", b =>
+            modelBuilder.Entity("AuthorBlab", b =>
                 {
-                    b.Property<string>("LikedId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("LikedId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("LikesId")
                         .HasColumnType("INTEGER");
@@ -47,7 +47,7 @@ namespace Blabber.Api.Migrations
 
                     b.HasIndex("LikesId");
 
-                    b.ToTable("UserLikes", (string)null);
+                    b.ToTable("Likes", (string)null);
                 });
 
             modelBuilder.Entity("Blabber.Api.Data.ApplicationUser", b =>
@@ -114,15 +114,43 @@ namespace Blabber.Api.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Blabber.Api.Models.Author", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DisplayPic")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Handle")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
+
+                    b.ToTable("Authors");
+                });
+
             modelBuilder.Entity("Blabber.Api.Models.Blab", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("AuthorId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Body")
                         .IsRequired()
@@ -147,9 +175,8 @@ namespace Blabber.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("AuthorId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("BlabId")
                         .HasColumnType("INTEGER");
@@ -306,24 +333,24 @@ namespace Blabber.Api.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ApplicationUserApplicationUser", b =>
+            modelBuilder.Entity("AuthorAuthor", b =>
                 {
-                    b.HasOne("Blabber.Api.Data.ApplicationUser", null)
+                    b.HasOne("Blabber.Api.Models.Author", null)
                         .WithMany()
                         .HasForeignKey("FollowersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Blabber.Api.Data.ApplicationUser", null)
+                    b.HasOne("Blabber.Api.Models.Author", null)
                         .WithMany()
                         .HasForeignKey("FollowingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ApplicationUserBlab", b =>
+            modelBuilder.Entity("AuthorBlab", b =>
                 {
-                    b.HasOne("Blabber.Api.Data.ApplicationUser", null)
+                    b.HasOne("Blabber.Api.Models.Author", null)
                         .WithMany()
                         .HasForeignKey("LikedId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -336,9 +363,20 @@ namespace Blabber.Api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Blabber.Api.Models.Author", b =>
+                {
+                    b.HasOne("Blabber.Api.Data.ApplicationUser", "ApplicationUser")
+                        .WithOne("Author")
+                        .HasForeignKey("Blabber.Api.Models.Author", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("Blabber.Api.Models.Blab", b =>
                 {
-                    b.HasOne("Blabber.Api.Data.ApplicationUser", "Author")
+                    b.HasOne("Blabber.Api.Models.Author", "Author")
                         .WithMany("Blabs")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -349,7 +387,7 @@ namespace Blabber.Api.Migrations
 
             modelBuilder.Entity("Blabber.Api.Models.Comment", b =>
                 {
-                    b.HasOne("Blabber.Api.Data.ApplicationUser", "Author")
+                    b.HasOne("Blabber.Api.Models.Author", "Author")
                         .WithMany("Comments")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -426,6 +464,11 @@ namespace Blabber.Api.Migrations
                 });
 
             modelBuilder.Entity("Blabber.Api.Data.ApplicationUser", b =>
+                {
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("Blabber.Api.Models.Author", b =>
                 {
                     b.Navigation("Blabs");
 

@@ -1,5 +1,4 @@
-﻿using Blabber.Api.Data;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Blabber.Api.Models
 {
@@ -10,7 +9,7 @@ namespace Blabber.Api.Models
         [Required]
         public int BlabId { get; set; }
         [Required]
-        public string? AuthorId { get; set; }
+        public int AuthorId { get; set; }
         public int ParentId { get; set; }
         [Required]
         public string? Body { get; set; }
@@ -19,7 +18,7 @@ namespace Blabber.Api.Models
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public Blab? Blab { get; set; }
-        public ApplicationUser? Author { get; set; }
+        public Author? Author { get; set; }
         public Comment? Parent { get; set; }
         public ICollection<Comment> Children { get; set; } = [];
     }

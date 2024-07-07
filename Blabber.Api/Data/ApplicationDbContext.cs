@@ -10,6 +10,7 @@ namespace Blabber.Api.Data
             : base(options)
         { }
 
+        public DbSet<Author> Authors { get; set; }
         public DbSet<Blab> Blabs { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
@@ -19,14 +20,20 @@ namespace Blabber.Api.Data
 
             // Configure relationships for ApplicationUser
             modelBuilder.Entity<ApplicationUser>()
-                .HasMany(u => u.Likes)
-                .WithMany(b => b.Liked)
-                .UsingEntity(j => j.ToTable("UserLikes"));
+                .HasOne(au => au.Author)
+                .WithOne(a => a.ApplicationUser)
+                .HasForeignKey<Author>(a => a.ApplicationUserId);
 
-            modelBuilder.Entity<ApplicationUser>()
-                .HasMany(u => u.Following)
-                .WithMany(u => u.Followers)
-                .UsingEntity(j => j.ToTable("UserFollowers"));
+            // Configure relationships for Author
+            modelBuilder.Entity<Author>()
+                .HasMany(a => a.Likes)
+                .WithMany(b => b.Liked)
+                .UsingEntity(j => j.ToTable("Likes"));
+
+            modelBuilder.Entity<Author>()
+                .HasMany(a => a.Following)
+                .WithMany(a => a.Followers)
+                .UsingEntity(j => j.ToTable("Followers"));
 
             // Configure relationships for Blab
             modelBuilder.Entity<Blab>()

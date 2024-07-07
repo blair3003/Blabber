@@ -9,16 +9,16 @@ namespace Blabber.Api.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string? AuthorId { get; set; }
+        public int AuthorId { get; set; }
         [Required]
         public string? Body { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        public ApplicationUser? Author { get; set; }
+        public Author? Author { get; set; }
         [InverseProperty("Likes")]
-        public ICollection<ApplicationUser> Liked { get; set; } = [];
+        public ICollection<Author> Liked { get; set; } = [];
         public ICollection<Comment> Comments { get; set; } = [];
     }
 }

@@ -157,12 +157,34 @@ namespace Blabber.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Authors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ApplicationUserId = table.Column<string>(type: "TEXT", nullable: false),
+                    Handle = table.Column<string>(type: "TEXT", nullable: false),
+                    DisplayName = table.Column<string>(type: "TEXT", nullable: false),
+                    DisplayPic = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Authors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Authors_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Blabs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AuthorId = table.Column<string>(type: "TEXT", nullable: false),
+                    AuthorId = table.Column<int>(type: "INTEGER", nullable: false),
                     Body = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
@@ -171,33 +193,33 @@ namespace Blabber.Api.Migrations
                 {
                     table.PrimaryKey("PK_Blabs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Blabs_AspNetUsers_AuthorId",
+                        name: "FK_Blabs_Authors_AuthorId",
                         column: x => x.AuthorId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Authors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserFollowers",
+                name: "Followers",
                 columns: table => new
                 {
-                    FollowersId = table.Column<string>(type: "TEXT", nullable: false),
-                    FollowingId = table.Column<string>(type: "TEXT", nullable: false)
+                    FollowersId = table.Column<int>(type: "INTEGER", nullable: false),
+                    FollowingId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserFollowers", x => new { x.FollowersId, x.FollowingId });
+                    table.PrimaryKey("PK_Followers", x => new { x.FollowersId, x.FollowingId });
                     table.ForeignKey(
-                        name: "FK_UserFollowers_AspNetUsers_FollowersId",
+                        name: "FK_Followers_Authors_FollowersId",
                         column: x => x.FollowersId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Authors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserFollowers_AspNetUsers_FollowingId",
+                        name: "FK_Followers_Authors_FollowingId",
                         column: x => x.FollowingId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Authors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -209,7 +231,7 @@ namespace Blabber.Api.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     BlabId = table.Column<int>(type: "INTEGER", nullable: false),
-                    AuthorId = table.Column<string>(type: "TEXT", nullable: false),
+                    AuthorId = table.Column<int>(type: "INTEGER", nullable: false),
                     ParentId = table.Column<int>(type: "INTEGER", nullable: false),
                     Body = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -219,9 +241,9 @@ namespace Blabber.Api.Migrations
                 {
                     table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_AspNetUsers_AuthorId",
+                        name: "FK_Comments_Authors_AuthorId",
                         column: x => x.AuthorId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Authors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -239,23 +261,23 @@ namespace Blabber.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserLikes",
+                name: "Likes",
                 columns: table => new
                 {
-                    LikedId = table.Column<string>(type: "TEXT", nullable: false),
+                    LikedId = table.Column<int>(type: "INTEGER", nullable: false),
                     LikesId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserLikes", x => new { x.LikedId, x.LikesId });
+                    table.PrimaryKey("PK_Likes", x => new { x.LikedId, x.LikesId });
                     table.ForeignKey(
-                        name: "FK_UserLikes_AspNetUsers_LikedId",
+                        name: "FK_Likes_Authors_LikedId",
                         column: x => x.LikedId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Authors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserLikes_Blabs_LikesId",
+                        name: "FK_Likes_Blabs_LikesId",
                         column: x => x.LikesId,
                         principalTable: "Blabs",
                         principalColumn: "Id",
@@ -300,6 +322,12 @@ namespace Blabber.Api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Authors_ApplicationUserId",
+                table: "Authors",
+                column: "ApplicationUserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Blabs_AuthorId",
                 table: "Blabs",
                 column: "AuthorId");
@@ -320,13 +348,13 @@ namespace Blabber.Api.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserFollowers_FollowingId",
-                table: "UserFollowers",
+                name: "IX_Followers_FollowingId",
+                table: "Followers",
                 column: "FollowingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserLikes_LikesId",
-                table: "UserLikes",
+                name: "IX_Likes_LikesId",
+                table: "Likes",
                 column: "LikesId");
         }
 
@@ -352,16 +380,19 @@ namespace Blabber.Api.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "UserFollowers");
+                name: "Followers");
 
             migrationBuilder.DropTable(
-                name: "UserLikes");
+                name: "Likes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Blabs");
+
+            migrationBuilder.DropTable(
+                name: "Authors");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
