@@ -1,4 +1,6 @@
-﻿namespace Blabber.Api.Models
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+
+namespace Blabber.Api.Models
 {
     public static class BlabMapper
     {
@@ -22,6 +24,17 @@
             {
                 AuthorId = request.AuthorId,
                 Body = request.Body
+            };
+        }
+
+        public static BlabPage ToPage(this IEnumerable<Blab> blabs, int totalCount, int pageNumber, int pageSize)
+        {
+            return new BlabPage
+            {
+                Blabs = blabs.Select(blab => blab.ToView()).ToList(),
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
             };
         }
 
