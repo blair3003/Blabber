@@ -7,7 +7,7 @@ namespace Blabber.Api.Services
     {
         private readonly IBlabRepository _repository = repository;
 
-        public async Task<BlabPage> GetBlabsAsync(int pageNumber, int pageSize)
+        public async Task<BlabPage> GetBlabPageAsync(int pageNumber, int pageSize)
         {
             var (blabs, totalCount) = await _repository.GetAsync(pageNumber, pageSize);
 

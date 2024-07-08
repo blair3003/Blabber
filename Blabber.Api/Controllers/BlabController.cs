@@ -15,7 +15,7 @@ namespace Blabber.Api.Controllers
         {
             try
             {
-                var result = await _blabService.GetBlabsAsync(pageNumber, pageSize);
+                var result = await _blabService.GetBlabPageAsync(pageNumber, pageSize);
                 return Ok(result);
             }
             catch (Exception ex)

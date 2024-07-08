@@ -4,6 +4,6 @@ namespace Blabber.Api.Services
 {
     public interface IBlabService
     {
-        Task<BlabPage> GetBlabsAsync(int pageNumber, int pageSize);
+        Task<BlabPage> GetBlabPageAsync(int pageNumber, int pageSize);
     }
 }
