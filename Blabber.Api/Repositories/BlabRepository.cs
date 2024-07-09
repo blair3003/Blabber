@@ -14,6 +14,7 @@ namespace Blabber.Api.Repositories
 
             var blabs = await _context.Blabs
                 .Include(b => b.Author)
+                .Include(b => b.Liked)
                 .Include(b => b.Comments)
                 .OrderByDescending(b => b.CreatedAt)
                 .Skip((pageNumber - 1) * pageSize)

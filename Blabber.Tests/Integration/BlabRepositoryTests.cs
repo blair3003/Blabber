@@ -5,9 +5,15 @@ using CommunityApp.Tests.Fixtures;
 
 namespace Blabber.Tests.Integration
 {
-    public class BlabRepositoryTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>, IDisposable
+    public class BlabRepositoryTests : IClassFixture<DatabaseFixture>, IDisposable
     {
-        private readonly DatabaseFixture _fixture = fixture;
+        private readonly DatabaseFixture _fixture;
+
+        public BlabRepositoryTests(DatabaseFixture fixture)
+        {
+            _fixture = fixture;
+            _fixture.ClearData();
+        }
 
         [Fact]
         public async Task GetAsync_ReturnsBlabs()
@@ -49,17 +55,11 @@ namespace Blabber.Tests.Integration
 
         public void Dispose()
         {
-            using (var context = _fixture.CreateContext())
-            {
-                context.Blabs.RemoveRange(context.Blabs);
-                context.Authors.RemoveRange(context.Authors);
-                context.Users.RemoveRange(context.Users);
-                context.SaveChanges();
-            }
+            _fixture.ClearData();
 
             using (var context = _fixture.CreateContext())
             {
-                if (context.Blabs.Any() || context.Authors.Any() || context.Users.Any())
+                if (context.Blabs.Any() || context.Comments.Any() || context.Authors.Any() || context.Users.Any())
                 {
                     throw new InvalidOperationException("Failed to clear data.");
                 }

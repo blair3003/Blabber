@@ -34,7 +34,7 @@ namespace Blabber.Tests.Unit
                 .ReturnsAsync((blabs, totalCount));
 
             //Act
-            var result = await _blabService.GetBlabPageAsync(pageNumber, pageSize);
+            var result = await _blabService.GetBlabFeedAsync(pageNumber, pageSize);
 
             // Assert
             Assert.NotNull(result);

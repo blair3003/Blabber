@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Blabber.Api.Migrations
 {
     /// <inheritdoc />
@@ -204,15 +206,15 @@ namespace Blabber.Api.Migrations
                 name: "Followers",
                 columns: table => new
                 {
-                    FollowersId = table.Column<int>(type: "INTEGER", nullable: false),
-                    FollowingId = table.Column<int>(type: "INTEGER", nullable: false)
+                    FollowingId = table.Column<int>(type: "INTEGER", nullable: false),
+                    FollowerId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Followers", x => new { x.FollowersId, x.FollowingId });
+                    table.PrimaryKey("PK_Followers", x => new { x.FollowingId, x.FollowerId });
                     table.ForeignKey(
-                        name: "FK_Followers_Authors_FollowersId",
-                        column: x => x.FollowersId,
+                        name: "FK_Followers_Authors_FollowerId",
+                        column: x => x.FollowerId,
                         principalTable: "Authors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -232,7 +234,7 @@ namespace Blabber.Api.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     BlabId = table.Column<int>(type: "INTEGER", nullable: false),
                     AuthorId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ParentId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ParentId = table.Column<int>(type: "INTEGER", nullable: true),
                     Body = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
@@ -264,12 +266,12 @@ namespace Blabber.Api.Migrations
                 name: "Likes",
                 columns: table => new
                 {
-                    LikedId = table.Column<int>(type: "INTEGER", nullable: false),
-                    LikesId = table.Column<int>(type: "INTEGER", nullable: false)
+                    LikesId = table.Column<int>(type: "INTEGER", nullable: false),
+                    LikedId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => new { x.LikedId, x.LikesId });
+                    table.PrimaryKey("PK_Likes", x => new { x.LikesId, x.LikedId });
                     table.ForeignKey(
                         name: "FK_Likes_Authors_LikedId",
                         column: x => x.LikedId,
@@ -282,6 +284,75 @@ namespace Blabber.Api.Migrations
                         principalTable: "Blabs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "user1", 0, "2b47a71d-d170-443b-a1ec-776ba0f57a60", "user1@example.com", true, false, null, "USER1@EXAMPLE.COM", "USER1", null, null, false, "dcf8ed8b-5e39-48c2-9529-4361d6185e30", false, "user1" },
+                    { "user2", 0, "c63857d3-43ea-4010-b3f8-d477f9797ab8", "user2@example.com", true, false, null, "USER2@EXAMPLE.COM", "USER2", null, null, false, "48405aec-edd0-44e8-95d8-454a5f68ff25", false, "user2" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Authors",
+                columns: new[] { "Id", "ApplicationUserId", "DisplayName", "DisplayPic", "Handle" },
+                values: new object[,]
+                {
+                    { 1, "user1", "First Author", null, "Author1" },
+                    { 2, "user2", "Second Author", null, "Author2" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Blabs",
+                columns: new[] { "Id", "AuthorId", "Body", "CreatedAt", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 1, 1, "First blab by Author1", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1018), new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1023) },
+                    { 2, 2, "First blab by Author2", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1026), new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1026) },
+                    { 3, 1, "Second blab by Author1", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1029), new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1029) },
+                    { 4, 2, "Second blab by Author2", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1030), new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1031) },
+                    { 5, 1, "Third blab by Author1", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1032), new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1033) },
+                    { 6, 2, "Third blab by Author2", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1034), new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1035) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Followers",
+                columns: new[] { "FollowerId", "FollowingId" },
+                values: new object[,]
+                {
+                    { 2, 1 },
+                    { 1, 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Comments",
+                columns: new[] { "Id", "AuthorId", "BlabId", "Body", "CreatedAt", "ParentId", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 1, 2, 1, "Comment by Author2 on Blab1", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1070), null, new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1071) },
+                    { 2, 1, 2, "Comment by Author1 on Blab2", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1074), null, new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1074) },
+                    { 4, 1, 5, "Comment by Author1 on Blab5", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1079), null, new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1079) },
+                    { 5, 2, 6, "Comment by Author2 on Blab6", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1081), null, new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1081) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Likes",
+                columns: new[] { "LikedId", "LikesId" },
+                values: new object[,]
+                {
+                    { 2, 1 },
+                    { 1, 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Comments",
+                columns: new[] { "Id", "AuthorId", "BlabId", "Body", "CreatedAt", "ParentId", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 3, 1, 1, "Reply by Author1 on Blab1", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1076), 1, new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1076) },
+                    { 6, 2, 5, "Reply by Author2 on Blab5", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1083), 4, new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1083) }
                 });
 
             migrationBuilder.CreateIndex(
@@ -348,14 +419,14 @@ namespace Blabber.Api.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Followers_FollowingId",
+                name: "IX_Followers_FollowerId",
                 table: "Followers",
-                column: "FollowingId");
+                column: "FollowerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_LikesId",
+                name: "IX_Likes_LikedId",
                 table: "Likes",
-                column: "LikesId");
+                column: "LikedId");
         }
 
         /// <inheritdoc />

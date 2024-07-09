@@ -50,6 +50,18 @@ namespace CommunityApp.Tests.Fixtures
             return new ApplicationDbContext(options);
         }
 
+        public void ClearData()
+        {
+            using (var context = CreateContext())
+            {
+                context.Comments.RemoveRange(context.Comments);
+                context.Blabs.RemoveRange(context.Blabs);
+                context.Authors.RemoveRange(context.Authors);
+                context.Users.RemoveRange(context.Users);
+                context.SaveChanges();
+            }
+        }
+
         public void Dispose()
         {
             _applicationDbContext.Database.EnsureDeleted();

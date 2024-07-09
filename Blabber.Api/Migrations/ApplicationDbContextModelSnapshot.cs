@@ -17,36 +17,6 @@ namespace Blabber.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
 
-            modelBuilder.Entity("AuthorAuthor", b =>
-                {
-                    b.Property<int>("FollowersId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("FollowingId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("FollowersId", "FollowingId");
-
-                    b.HasIndex("FollowingId");
-
-                    b.ToTable("Followers", (string)null);
-                });
-
-            modelBuilder.Entity("AuthorBlab", b =>
-                {
-                    b.Property<int>("LikedId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("LikesId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("LikedId", "LikesId");
-
-                    b.HasIndex("LikesId");
-
-                    b.ToTable("Likes", (string)null);
-                });
-
             modelBuilder.Entity("Blabber.Api.Data.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -109,6 +79,38 @@ namespace Blabber.Api.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "user1",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "2b47a71d-d170-443b-a1ec-776ba0f57a60",
+                            Email = "user1@example.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER1@EXAMPLE.COM",
+                            NormalizedUserName = "USER1",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "dcf8ed8b-5e39-48c2-9529-4361d6185e30",
+                            TwoFactorEnabled = false,
+                            UserName = "user1"
+                        },
+                        new
+                        {
+                            Id = "user2",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c63857d3-43ea-4010-b3f8-d477f9797ab8",
+                            Email = "user2@example.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER2@EXAMPLE.COM",
+                            NormalizedUserName = "USER2",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "48405aec-edd0-44e8-95d8-454a5f68ff25",
+                            TwoFactorEnabled = false,
+                            UserName = "user2"
+                        });
                 });
 
             modelBuilder.Entity("Blabber.Api.Models.Author", b =>
@@ -138,6 +140,22 @@ namespace Blabber.Api.Migrations
                         .IsUnique();
 
                     b.ToTable("Authors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ApplicationUserId = "user1",
+                            DisplayName = "First Author",
+                            Handle = "Author1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ApplicationUserId = "user2",
+                            DisplayName = "Second Author",
+                            Handle = "Author2"
+                        });
                 });
 
             modelBuilder.Entity("Blabber.Api.Models.Blab", b =>
@@ -164,6 +182,56 @@ namespace Blabber.Api.Migrations
                     b.HasIndex("AuthorId");
 
                     b.ToTable("Blabs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AuthorId = 1,
+                            Body = "First blab by Author1",
+                            CreatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1018),
+                            UpdatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1023)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AuthorId = 2,
+                            Body = "First blab by Author2",
+                            CreatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1026),
+                            UpdatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1026)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AuthorId = 1,
+                            Body = "Second blab by Author1",
+                            CreatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1029),
+                            UpdatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1029)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AuthorId = 2,
+                            Body = "Second blab by Author2",
+                            CreatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1030),
+                            UpdatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1031)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AuthorId = 1,
+                            Body = "Third blab by Author1",
+                            CreatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1032),
+                            UpdatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1033)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AuthorId = 2,
+                            Body = "Third blab by Author2",
+                            CreatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1034),
+                            UpdatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1035)
+                        });
                 });
 
             modelBuilder.Entity("Blabber.Api.Models.Comment", b =>
@@ -185,7 +253,7 @@ namespace Blabber.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ParentId")
+                    b.Property<int?>("ParentId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -200,6 +268,118 @@ namespace Blabber.Api.Migrations
                     b.HasIndex("ParentId");
 
                     b.ToTable("Comments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AuthorId = 2,
+                            BlabId = 1,
+                            Body = "Comment by Author2 on Blab1",
+                            CreatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1070),
+                            UpdatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1071)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AuthorId = 1,
+                            BlabId = 2,
+                            Body = "Comment by Author1 on Blab2",
+                            CreatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1074),
+                            UpdatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1074)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AuthorId = 1,
+                            BlabId = 1,
+                            Body = "Reply by Author1 on Blab1",
+                            CreatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1076),
+                            ParentId = 1,
+                            UpdatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1076)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AuthorId = 1,
+                            BlabId = 5,
+                            Body = "Comment by Author1 on Blab5",
+                            CreatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1079),
+                            UpdatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1079)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AuthorId = 2,
+                            BlabId = 6,
+                            Body = "Comment by Author2 on Blab6",
+                            CreatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1081),
+                            UpdatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1081)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AuthorId = 2,
+                            BlabId = 5,
+                            Body = "Reply by Author2 on Blab5",
+                            CreatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1083),
+                            ParentId = 4,
+                            UpdatedAt = new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1083)
+                        });
+                });
+
+            modelBuilder.Entity("Followers", b =>
+                {
+                    b.Property<int>("FollowingId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FollowerId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("FollowingId", "FollowerId");
+
+                    b.HasIndex("FollowerId");
+
+                    b.ToTable("Followers");
+
+                    b.HasData(
+                        new
+                        {
+                            FollowingId = 2,
+                            FollowerId = 1
+                        },
+                        new
+                        {
+                            FollowingId = 1,
+                            FollowerId = 2
+                        });
+                });
+
+            modelBuilder.Entity("Likes", b =>
+                {
+                    b.Property<int>("LikesId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LikedId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("LikesId", "LikedId");
+
+                    b.HasIndex("LikedId");
+
+                    b.ToTable("Likes");
+
+                    b.HasData(
+                        new
+                        {
+                            LikesId = 2,
+                            LikedId = 1
+                        },
+                        new
+                        {
+                            LikesId = 1,
+                            LikedId = 2
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -330,36 +510,6 @@ namespace Blabber.Api.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AuthorAuthor", b =>
-                {
-                    b.HasOne("Blabber.Api.Models.Author", null)
-                        .WithMany()
-                        .HasForeignKey("FollowersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Blabber.Api.Models.Author", null)
-                        .WithMany()
-                        .HasForeignKey("FollowingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("AuthorBlab", b =>
-                {
-                    b.HasOne("Blabber.Api.Models.Author", null)
-                        .WithMany()
-                        .HasForeignKey("LikedId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Blabber.Api.Models.Blab", null)
-                        .WithMany()
-                        .HasForeignKey("LikesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Blabber.Api.Models.Author", b =>
                 {
                     b.HasOne("Blabber.Api.Data.ApplicationUser", "ApplicationUser")
@@ -399,14 +549,43 @@ namespace Blabber.Api.Migrations
                     b.HasOne("Blabber.Api.Models.Comment", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Author");
 
                     b.Navigation("Blab");
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("Followers", b =>
+                {
+                    b.HasOne("Blabber.Api.Models.Author", null)
+                        .WithMany()
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Blabber.Api.Models.Author", null)
+                        .WithMany()
+                        .HasForeignKey("FollowingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Likes", b =>
+                {
+                    b.HasOne("Blabber.Api.Models.Author", null)
+                        .WithMany()
+                        .HasForeignKey("LikedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Blabber.Api.Models.Blab", null)
+                        .WithMany()
+                        .HasForeignKey("LikesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
