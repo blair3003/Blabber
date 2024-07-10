@@ -4,10 +4,6 @@ namespace Blabber.Api.Models
 {
     public class AuthorCreateRequest
     {
-        [Display(Name = "Application User ID")]
-        [Required(ErrorMessage = "The Application User ID field is required.")]
-        public string? ApplicationUserId { get; set; }
-
         [Display(Name = "Handle")]
         [Required(ErrorMessage = "The Handle field is required.")]
         [StringLength(20, MinimumLength = 3, ErrorMessage = "The {0} must be between {2} and {1} characters long.")]
@@ -23,5 +19,4 @@ namespace Blabber.Api.Models
         [Url(ErrorMessage = "The {0} field is not a valid URL.")]
         public string? DisplayPic { get; set; }
     }
-
 }

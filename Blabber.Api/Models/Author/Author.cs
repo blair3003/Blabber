@@ -8,18 +8,13 @@ namespace Blabber.Api.Models
     {
         [Key]
         public int Id { get; set; }
-
         [Required]
         public string? ApplicationUserId { get; set; }
-
         [Required]
         public string? Handle { get; set; }
-
         [Required]
         public string? DisplayName { get; set; }
-
         public string? DisplayPic { get; set; }
-
 
         public ApplicationUser? ApplicationUser { get; set; }
         public ICollection<Blab> Blabs { get; set; } = [];
@@ -30,6 +25,5 @@ namespace Blabber.Api.Models
         public ICollection<Author> Following { get; set; } = [];
         [InverseProperty("Following")]
         public ICollection<Author> Followers { get; set; } = [];
-
     }
 }

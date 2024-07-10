@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Blabber.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class CreateInitial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -291,8 +291,8 @@ namespace Blabber.Api.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "user1", 0, "2b47a71d-d170-443b-a1ec-776ba0f57a60", "user1@example.com", true, false, null, "USER1@EXAMPLE.COM", "USER1", null, null, false, "dcf8ed8b-5e39-48c2-9529-4361d6185e30", false, "user1" },
-                    { "user2", 0, "c63857d3-43ea-4010-b3f8-d477f9797ab8", "user2@example.com", true, false, null, "USER2@EXAMPLE.COM", "USER2", null, null, false, "48405aec-edd0-44e8-95d8-454a5f68ff25", false, "user2" }
+                    { "user1", 0, "66ab3692-328c-4d7b-9133-d226a569967b", "user1@example.com", true, false, null, "USER1@EXAMPLE.COM", "USER1", null, null, false, "4e62cf81-ebca-4814-8408-732cc7c5e0d8", false, "user1" },
+                    { "user2", 0, "65572535-79a3-4ea7-b166-d4f5e37b6474", "user2@example.com", true, false, null, "USER2@EXAMPLE.COM", "USER2", null, null, false, "53a1aefe-875b-4fa1-b6c1-4b4028ac9149", false, "user2" }
                 });
 
             migrationBuilder.InsertData(
@@ -309,12 +309,12 @@ namespace Blabber.Api.Migrations
                 columns: new[] { "Id", "AuthorId", "Body", "CreatedAt", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, 1, "First blab by Author1", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1018), new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1023) },
-                    { 2, 2, "First blab by Author2", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1026), new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1026) },
-                    { 3, 1, "Second blab by Author1", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1029), new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1029) },
-                    { 4, 2, "Second blab by Author2", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1030), new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1031) },
-                    { 5, 1, "Third blab by Author1", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1032), new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1033) },
-                    { 6, 2, "Third blab by Author2", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1034), new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1035) }
+                    { 1, 1, "First blab by Author1", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5615), new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5617) },
+                    { 2, 2, "First blab by Author2", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5619), new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5619) },
+                    { 3, 1, "Second blab by Author1", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5621), new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5621) },
+                    { 4, 2, "Second blab by Author2", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5623), new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5623) },
+                    { 5, 1, "Third blab by Author1", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5624), new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5625) },
+                    { 6, 2, "Third blab by Author2", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5626), new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5627) }
                 });
 
             migrationBuilder.InsertData(
@@ -331,10 +331,10 @@ namespace Blabber.Api.Migrations
                 columns: new[] { "Id", "AuthorId", "BlabId", "Body", "CreatedAt", "ParentId", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, 2, 1, "Comment by Author2 on Blab1", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1070), null, new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1071) },
-                    { 2, 1, 2, "Comment by Author1 on Blab2", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1074), null, new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1074) },
-                    { 4, 1, 5, "Comment by Author1 on Blab5", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1079), null, new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1079) },
-                    { 5, 2, 6, "Comment by Author2 on Blab6", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1081), null, new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1081) }
+                    { 1, 2, 1, "Comment by Author2 on Blab1", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5662), null, new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5662) },
+                    { 2, 1, 2, "Comment by Author1 on Blab2", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5665), null, new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5666) },
+                    { 4, 1, 5, "Comment by Author1 on Blab5", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5670), null, new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5670) },
+                    { 5, 2, 6, "Comment by Author2 on Blab6", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5672), null, new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5672) }
                 });
 
             migrationBuilder.InsertData(
@@ -351,8 +351,8 @@ namespace Blabber.Api.Migrations
                 columns: new[] { "Id", "AuthorId", "BlabId", "Body", "CreatedAt", "ParentId", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 3, 1, 1, "Reply by Author1 on Blab1", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1076), 1, new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1076) },
-                    { 6, 2, 5, "Reply by Author2 on Blab5", new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1083), 4, new DateTime(2024, 7, 9, 18, 14, 34, 643, DateTimeKind.Utc).AddTicks(1083) }
+                    { 3, 1, 1, "Reply by Author1 on Blab1", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5667), 1, new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5668) },
+                    { 6, 2, 5, "Reply by Author2 on Blab5", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5673), 4, new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5674) }
                 });
 
             migrationBuilder.CreateIndex(

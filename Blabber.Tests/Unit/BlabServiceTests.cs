@@ -8,7 +8,7 @@ namespace Blabber.Tests.Unit
     public class BlabServiceTests : IDisposable
     {
         private readonly Mock<IBlabRepository> _mockRepository;
-        private readonly BlabService _blabService;
+        private readonly IBlabService _blabService;
 
         public BlabServiceTests()
         {

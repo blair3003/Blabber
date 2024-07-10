@@ -9,15 +9,22 @@
                 Id = author.Id,
                 Handle = author.Handle,
                 DisplayName = author.DisplayName,
-                DisplayPic = author.DisplayPic
+                DisplayPic = author.DisplayPic,
+                FollowingCount = author.Following.Count,
+                FollowerCount = author.Followers.Count
             };
         }
 
-        public static Author ToAuthor(this AuthorCreateRequest request)
+        public static IEnumerable<AuthorView> ToViewList(this IEnumerable<Author> authors)
+        {
+            return authors.Select(author => author.ToView()).ToList();
+        }
+
+        public static Author ToAuthor(this AuthorCreateRequest request, string applicationUserId)
         {
             return new Author
             {
-                ApplicationUserId = request.ApplicationUserId,
+                ApplicationUserId = applicationUserId,
                 Handle = request.Handle,
                 DisplayName = request.DisplayName,
                 DisplayPic = request.DisplayPic

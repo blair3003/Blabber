@@ -24,6 +24,11 @@ namespace Blabber.Api.Data
 
         private void ConfigureRelationships(ModelBuilder modelBuilder)
         {
+            // Configure unique constraint for Author
+            modelBuilder.Entity<Author>()
+                .HasIndex(a => a.ApplicationUserId)
+                .IsUnique();
+
             // Configure relationships for ApplicationUser
             modelBuilder.Entity<ApplicationUser>()
                 .HasOne(au => au.Author)
