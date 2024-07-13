@@ -5,6 +5,9 @@ namespace Blabber.Api.Services
     public interface IAuthorService
     {
         Task<IEnumerable<AuthorView>> GetAllAuthorsAsync();
-        Task<AuthorView?> AddAuthorAsync(AuthorCreateRequest request, string applicationUserId);
+        Task<AuthorView?> GetAuthorByIdAsync(int id);
+        Task<string?> GetApplicationUserIdByAuthorIdAsync(int id);
+        Task<AuthorView?> AddAuthorAsync(AuthorCreateRequest request);
+        Task<AuthorView?> UpdateAuthorAsync(int id, AuthorUpdateRequest request);
     }
 }

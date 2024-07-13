@@ -14,5 +14,26 @@ namespace Blabber.Api.Services
             return blabs.ToFeed(totalCount, pageNumber, pageSize);
         }
 
+        public async Task<BlabView?> GetBlabByIdAsync(int id)
+        {
+            var blab = await _repository.GetByIdAsync(id);
+
+            return blab?.ToView();
+        }
+
+        public async Task<BlabView?> AddBlabAsync(BlabCreateRequest request)
+        {
+            var newBlab = await _repository.AddAsync(request.ToBlab());
+
+            return newBlab?.ToView();
+        }
+
+        public async Task<BlabView?> UpdateBlabAsync(int id, BlabUpdateRequest request)
+        {
+            var updatedBlab = await _repository.UpdateAsync(id, request);
+
+            return updatedBlab?.ToView();
+        }
+
     }
 }

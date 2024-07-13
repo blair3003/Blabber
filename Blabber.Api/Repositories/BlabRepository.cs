@@ -24,5 +24,52 @@ namespace Blabber.Api.Repositories
             return (blabs, totalCount);
         }
 
+        public async Task<Blab?> GetByIdAsync(int id)
+        {
+            var blab = await _context.Blabs
+                .Include(b => b.Author)
+                .Include(b => b.Liked)
+                .Include(b => b.Comments)
+                .FirstOrDefaultAsync(b => id == b.Id);
+
+            return blab;
+        }
+
+        public async Task<Blab?> AddAsync(Blab blab)
+        {
+            var author = await _context.Authors.FindAsync(blab.AuthorId);
+
+            if (author == null)
+            {
+                return null;
+            }
+
+            await _context.Blabs.AddAsync(blab);
+            await _context.SaveChangesAsync();
+
+            return blab;
+        }
+
+        public async Task<Blab?> UpdateAsync(int id, BlabUpdateRequest request)
+        {
+            if (id != request.Id)
+            {
+                return null;
+            }
+
+            var existingBlab = await _context.Blabs.FindAsync(id);
+
+            if (existingBlab == null)
+            {
+                return null;
+            }
+
+            existingBlab.UpdateBlab(request);
+
+            await _context.SaveChangesAsync();
+
+            return existingBlab;
+        }
+
     }
 }

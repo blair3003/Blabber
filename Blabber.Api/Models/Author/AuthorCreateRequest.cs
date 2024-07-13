@@ -4,6 +4,9 @@ namespace Blabber.Api.Models
 {
     public class AuthorCreateRequest
     {
+        [Required]
+        public string? ApplicationUserId { get; set; }
+
         [Display(Name = "Handle")]
         [Required(ErrorMessage = "The Handle field is required.")]
         [StringLength(20, MinimumLength = 3, ErrorMessage = "The {0} must be between {2} and {1} characters long.")]

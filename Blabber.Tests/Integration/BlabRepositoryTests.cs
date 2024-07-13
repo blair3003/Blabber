@@ -50,7 +50,128 @@ namespace Blabber.Tests.Integration
                 Assert.Contains(Blabs, b => b.Body == "Test Blab 2");
                 Assert.Contains(Blabs, b => b.Body == "Test Blab 3");
             }
+        }
 
+        [Fact]
+        public async Task GetByIdAsync_ReturnsBlab()
+        {
+            var authorId = 1;
+            var blabId = 1;
+            var user = new ApplicationUser { Id = "1", UserName = "TestUser", Email = "test@user.com" };
+            var author = new Author { Id = authorId, ApplicationUserId = "1", Handle = "TestHandle", DisplayName = "TestDisplayName" };
+            var blab = new Blab { Id = blabId, AuthorId = authorId, Body = "Test Blab" };
+
+            using (var context = _fixture.CreateContext())
+            {
+                context.Users.Add(user);
+                context.Authors.Add(author);
+                context.Blabs.Add(blab);
+                await context.SaveChangesAsync();
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var repository = new BlabRepository(context);
+                var result = await repository.GetByIdAsync(blabId);
+
+                Assert.NotNull(result);
+                Assert.Equal("Test Blab", result.Body);
+            }
+
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_ReturnsNull_WhenBlabDoesNotExist()
+        {
+            using (var context = _fixture.CreateContext())
+            {
+                var repository = new BlabRepository(context);
+                var result = await repository.GetByIdAsync(999);
+                Assert.Null(result);
+            }
+        }
+
+        [Fact]
+        public async Task AddAsync_CreatesBlab()
+        {
+            var authorId = 1;
+            var blabId = 1;
+            var user = new ApplicationUser { Id = "1", UserName = "TestUser", Email = "test@user.com" };
+            var author = new Author { Id = authorId, ApplicationUserId = "1", Handle = "TestHandle", DisplayName = "TestDisplayName" };
+            var blab = new Blab { Id = blabId, AuthorId = authorId, Body = "Test Blab" };
+
+            using (var context = _fixture.CreateContext())
+            {
+                context.Users.Add(user);
+                context.Authors.Add(author);
+                await context.SaveChangesAsync();
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var repository = new BlabRepository(context);
+                var result = await repository.AddAsync(blab);
+
+                Assert.NotNull(result);
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var result = await context.Blabs.FindAsync(blabId);
+
+                Assert.NotNull(result);
+                Assert.Equal("Test Blab", result.Body);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ModifiesBlab()
+        {
+            var authorId = 1;
+            var blabId = 1;
+            var user = new ApplicationUser { Id = "1", UserName = "TestUser", Email = "test@user.com" };
+            var author = new Author { Id = authorId, ApplicationUserId = "1", Handle = "TestHandle", DisplayName = "TestDisplayName" };
+            var blab = new Blab { Id = blabId, AuthorId = authorId, Body = "Test Blab" };
+            var request = new BlabUpdateRequest { Id = blabId, Body = "Updated Blab" };
+
+            using (var context = _fixture.CreateContext())
+            {
+                context.Users.Add(user);
+                context.Authors.Add(author);
+                context.Blabs.Add(blab);
+                await context.SaveChangesAsync();
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var repository = new BlabRepository(context);
+                var result = await repository.UpdateAsync(blabId, request);
+
+                Assert.NotNull(result);
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var result = await context.Blabs.FindAsync(blabId);
+
+                Assert.NotNull(result);
+                Assert.Equal("Updated Blab", result.Body);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ReturnsNull_WhenIdMismatch()
+        {
+            var blabId = 1;
+            var wrongBlabId = 2;
+            var request = new BlabUpdateRequest { Id = blabId, Body = "Updated Blab" };
+
+            using (var context = _fixture.CreateContext())
+            {
+                var repository = new BlabRepository(context);
+                var result = await repository.UpdateAsync(wrongBlabId, request);
+                Assert.Null(result);
+            }
         }
 
         public void Dispose()

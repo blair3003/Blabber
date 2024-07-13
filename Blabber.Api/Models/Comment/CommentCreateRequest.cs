@@ -13,8 +13,7 @@ namespace Blabber.Api.Models
         public int AuthorId { get; set; }
 
         [Display(Name = "Parent ID")]
-        [Required(ErrorMessage = "The Parent ID field is required.")]
-        public int ParentId { get; set; }
+        public int? ParentId { get; set; }
 
         [Display(Name = "Body")]
         [Required(ErrorMessage = "The Body field is required.")]

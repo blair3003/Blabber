@@ -20,32 +20,33 @@
             return authors.Select(author => author.ToView()).ToList();
         }
 
-        public static Author ToAuthor(this AuthorCreateRequest request, string applicationUserId)
+        public static Author ToAuthor(this AuthorCreateRequest request)
         {
             return new Author
             {
-                ApplicationUserId = applicationUserId,
+                ApplicationUserId = request.ApplicationUserId,
                 Handle = request.Handle,
                 DisplayName = request.DisplayName,
                 DisplayPic = request.DisplayPic
             };
         }
 
-        public static AuthorEditRequest ToAuthorEditRequest(this Author author)
+        public static AuthorUpdateRequest ToAuthorUpdateRequest(this Author author)
         {
-            return new AuthorEditRequest
+            return new AuthorUpdateRequest
             {
+                Id = author.Id,
                 Handle = author.Handle,
                 DisplayName = author.DisplayName,
                 DisplayPic = author.DisplayPic
             };
         }
 
-        public static void EditAuthor(this Author author, AuthorEditRequest request)
+        public static void UpdateAuthor(this Author author, AuthorUpdateRequest request)
         {
             author.Handle = request.Handle;
             author.DisplayName = request.DisplayName;
-            author.DisplayPic = request.DisplayPic;
+            author.DisplayPic = request.DisplayPic ?? author.DisplayPic;
         }
     }
 }

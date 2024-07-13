@@ -47,6 +47,90 @@ namespace Blabber.Tests.Unit
             Assert.Contains(result.Blabs, b => b.Body == "Test Blab 3");
         }
 
+        [Fact]
+        public async Task GetBlabByIdAsync_ReturnsBlab()
+        {
+            // Arrange
+            var authorId = 1;
+            var blabId = 1;
+            var blab = new Blab { Id = blabId, AuthorId = authorId, Body = "Test Blab" };
+
+            _mockRepository
+                .Setup(repo => repo.GetByIdAsync(blabId))
+                .ReturnsAsync(blab);
+
+            // Act
+            var result = await _blabService.GetBlabByIdAsync(blabId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Test Blab", result.Body);
+            _mockRepository.Verify(repo => repo.GetByIdAsync(blabId), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetBlabByIdAsync_ReturnsNull_WhenBlabDoesNotExist()
+        {
+            // Arrange
+            var blabId = 999;
+
+            _mockRepository
+                .Setup(repo => repo.GetByIdAsync(blabId))
+                .ReturnsAsync((Blab?)null);
+
+            // Act
+            var result = await _blabService.GetBlabByIdAsync(blabId);
+
+            // Assert
+            Assert.Null(result);
+            _mockRepository.Verify(repo => repo.GetByIdAsync(blabId), Times.Once);
+        }
+
+        [Fact]
+        public async Task AddBlabAsync_CreatesBlab()
+        {
+            // Arrange
+            var authorId = 1;
+            var blabId = 1;
+            var request = new BlabCreateRequest { AuthorId = authorId, Body = "New Blab" };
+            var blab = new Blab { Id = blabId, AuthorId = authorId, Body = "New Blab" };
+
+            _mockRepository
+                .Setup(repo => repo.AddAsync(It.IsAny<Blab>()))
+                .ReturnsAsync(blab);
+
+            // Act
+            var result = await _blabService.AddBlabAsync(request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(blabId, result.Id);
+            Assert.Equal("New Blab", result.Body);
+            _mockRepository.Verify(repo => repo.AddAsync(It.IsAny<Blab>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateAuthorAsync_ModifiesAuthor()
+        {
+            // Arrange
+            var authorId = 1;
+            var blabId = 1;
+            var request = new BlabUpdateRequest { Id = blabId, Body = "Updated Blab" };
+            var updatedBlab = new Blab { Id = blabId, AuthorId = authorId, Body = "Updated Blab" };
+
+            _mockRepository
+                .Setup(repo => repo.UpdateAsync(blabId, request))
+                .ReturnsAsync(updatedBlab);
+
+            // Act
+            var result = await _blabService.UpdateBlabAsync(blabId, request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Updated Blab", result.Body);
+            _mockRepository.Verify(repo => repo.UpdateAsync(blabId, request), Times.Once);
+        }
+
         public void Dispose()
         {
             _mockRepository.Reset();

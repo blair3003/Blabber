@@ -38,6 +38,111 @@ namespace Blabber.Tests.Unit
             Assert.Equal(2, result.Count());
             Assert.Contains(result, a => a.Handle == "TestHandle1");
             Assert.Contains(result, a => a.Handle == "TestHandle2");
+            _mockRepository.Verify(repo => repo.GetAllAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetAuthorByIdAsync_ReturnsAuthor()
+        {
+            // Arrange
+            var authorId = 1;
+            var author = new Author { Id = authorId, ApplicationUserId = "1", Handle = "TestHandle", DisplayName = "TestDisplayName" };
+
+            _mockRepository
+                .Setup(repo => repo.GetByIdAsync(authorId))
+                .ReturnsAsync(author);
+
+            // Act
+            var result = await _authorService.GetAuthorByIdAsync(authorId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("TestHandle", result.Handle);
+            _mockRepository.Verify(repo => repo.GetByIdAsync(authorId), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetAuthorByIdAsync_ReturnsNull_WhenAuthorDoesNotExist()
+        {
+            // Arrange
+            var authorId = 999;
+
+            _mockRepository
+                .Setup(repo => repo.GetByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync((Author?)null);
+
+            // Act
+            var result = await _authorService.GetAuthorByIdAsync(authorId);
+
+            // Assert
+            Assert.Null(result);
+            _mockRepository.Verify(repo => repo.GetByIdAsync(authorId), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetApplicationUserIdByAuthorIdAsync_ReturnsApplicationUserId()
+        {
+            // Arrange
+            var authorId = 1;
+            var applicationUserId = "1";
+            var author = new Author { Id = authorId, ApplicationUserId = applicationUserId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
+
+            _mockRepository
+                .Setup(repo => repo.GetByIdAsync(authorId))
+                .ReturnsAsync(author);
+
+            // Act
+            var result = await _authorService.GetApplicationUserIdByAuthorIdAsync(authorId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(applicationUserId, result);
+            _mockRepository.Verify(repo => repo.GetByIdAsync(authorId), Times.Once);
+        }
+
+        [Fact]
+        public async Task AddAuthorAsync_CreatesAuthor()
+        {
+            // Arrange
+            var authorId = 1;
+            var applicationUserId = "1";
+            var request = new AuthorCreateRequest { ApplicationUserId = applicationUserId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
+            var author = new Author { Id = authorId, ApplicationUserId = applicationUserId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
+
+            _mockRepository
+                .Setup(repo => repo.AddAsync(It.IsAny<Author>()))
+                .ReturnsAsync(author);
+
+            // Act
+            var result = await _authorService.AddAuthorAsync(request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(authorId, result.Id);
+            Assert.Equal("TestHandle", result.Handle);
+            _mockRepository.Verify(repo => repo.AddAsync(It.IsAny<Author>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateAuthorAsync_ModifiesAuthor()
+        {
+            // Arrange
+            var authorId = 1;
+            var applicationUserId = "1";
+            var request = new AuthorUpdateRequest { Id = authorId, Handle = "UpdatedHandle", DisplayName = "UpdatedDisplayName" };
+            var updatedAuthor = new Author { Id = authorId, ApplicationUserId = applicationUserId, Handle = "UpdatedHandle", DisplayName = "UpdatedDisplayName" };
+
+            _mockRepository
+                .Setup(repo => repo.UpdateAsync(authorId, request))
+                .ReturnsAsync(updatedAuthor);
+
+            // Act
+            var result = await _authorService.UpdateAuthorAsync(authorId, request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("UpdatedHandle", result.Handle);
+            _mockRepository.Verify(repo => repo.UpdateAsync(authorId, request), Times.Once);
         }
 
         public void Dispose()

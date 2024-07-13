@@ -14,7 +14,7 @@ namespace Blabber.Api.Models
                 UpdatedAt = blab.UpdatedAt,
                 Author = blab.Author?.ToView(),
                 Liked = blab.Liked.Select(author => author.ToView()).ToList(),
-                Comments = blab.Comments.Select(comment => comment.ToView()).ToList()
+                Comments = blab.Comments.Where(comment => comment.ParentId == null).Select(comment => comment.ToView()).ToList()
             };
         }
 
@@ -52,15 +52,15 @@ namespace Blabber.Api.Models
             };
         }
 
-        public static BlabEditRequest ToBlabEditRequest(this Blab blab)
+        public static BlabUpdateRequest ToBlabEditRequest(this Blab blab)
         {
-            return new BlabEditRequest
+            return new BlabUpdateRequest
             {
                 Body = blab.Body
             };
         }
 
-        public static void EditBlab(this Blab blab, BlabEditRequest request)
+        public static void UpdateBlab(this Blab blab, BlabUpdateRequest request)
         {
             blab.Body = request.Body;
             blab.UpdatedAt = DateTime.UtcNow;
