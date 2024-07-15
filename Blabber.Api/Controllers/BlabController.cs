@@ -108,7 +108,7 @@ namespace Blabber.Api.Controllers
 
                 if (currentUserId != authorUserId)
                 {
-                    return Forbid("Access denied.");
+                    throw new AuthenticationException("User not Author.");
                 }
 
                 var updatedBlab = await _blabService.UpdateBlabAsync(id, request)
@@ -119,6 +119,48 @@ namespace Blabber.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating Blab.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
+        [HttpPost("{id}/like")]
+        public async Task<IActionResult> LikeBlab(int id)
+        {
+            try
+            {
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                    ?? throw new AuthenticationException("User not authenticated.");
+
+                var authorId = await _authorService.GetAuthorIdByApplicationUserIdAsync(currentUserId)
+                    ?? throw new InvalidOperationException("GetAuthorIdByApplicationUserIdAsync returned null.");
+
+                await _blabService.AddBlabLikeAsync(id, authorId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error liking Blab.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
+        [HttpPost("{id}/unlike")]
+        public async Task<IActionResult> UnLikeBlab(int id)
+        {
+            try
+            {
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                    ?? throw new AuthenticationException("User not authenticated.");
+
+                var authorId = await _authorService.GetAuthorIdByApplicationUserIdAsync(currentUserId)
+                    ?? throw new InvalidOperationException("GetAuthorIdByApplicationUserIdAsync returned null.");
+
+                await _blabService.RemoveBlabLikeAsync(id, authorId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error unliking Blab.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
         }

@@ -2,6 +2,7 @@
 using Blabber.Api.Models;
 using Blabber.Api.Repositories;
 using CommunityApp.Tests.Fixtures;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blabber.Tests.Integration
 {
@@ -171,6 +172,77 @@ namespace Blabber.Tests.Integration
                 var repository = new BlabRepository(context);
                 var result = await repository.UpdateAsync(wrongBlabId, request);
                 Assert.Null(result);
+            }
+        }
+
+        [Fact]
+        public async Task AddLikeAsync_LikesBlab()
+        {
+            var userId = "1";
+            var authorId = 1;
+            var blabId = 1;
+            var user = new ApplicationUser { Id = userId, UserName = "TestUser", Email = "test@user.com" };
+            var author = new Author { Id = authorId, ApplicationUserId = userId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
+            var blab = new Blab { Id = blabId, AuthorId = authorId, Body = "Test Blab" };
+
+            using (var context = _fixture.CreateContext())
+            {
+                context.Users.Add(user);
+                context.Authors.Add(author);
+                context.Blabs.Add(blab);
+                await context.SaveChangesAsync();
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var repository = new BlabRepository(context);
+                await repository.AddLikeAsync(blabId, authorId);
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var result = await context.Blabs
+                    .Include(b => b.Liked)
+                    .FirstOrDefaultAsync(b => b.Id == blabId);
+
+                Assert.NotNull(result);
+                Assert.Single(result.Liked);
+            }
+        }
+
+        [Fact]
+        public async Task RemoveLikeAsync_UnlikesBlab()
+        {
+            var userId = "1";
+            var authorId = 1;
+            var blabId = 1;
+            var user = new ApplicationUser { Id = userId, UserName = "TestUser", Email = "test@user.com" };
+            var author = new Author { Id = authorId, ApplicationUserId = userId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
+            var blab = new Blab { Id = blabId, AuthorId = authorId, Body = "Test Blab" };
+
+            using (var context = _fixture.CreateContext())
+            {
+                context.Users.Add(user);
+                context.Authors.Add(author);
+                blab.Liked.Add(author);
+                context.Blabs.Add(blab);
+                await context.SaveChangesAsync();
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var repository = new BlabRepository(context);
+                await repository.RemoveLikeAsync(blabId, authorId);
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var result = await context.Blabs
+                    .Include(b => b.Liked)
+                    .FirstOrDefaultAsync(b => b.Id == blabId);
+
+                Assert.NotNull(result);
+                Assert.Empty(result.Liked);
             }
         }
 

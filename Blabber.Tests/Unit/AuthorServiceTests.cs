@@ -101,6 +101,27 @@ namespace Blabber.Tests.Unit
         }
 
         [Fact]
+        public async Task GetAuthorIdByApplicationUserIdAsync_ReturnsAuthorId()
+        {
+            // Arrange
+            var authorId = 1;
+            var applicationUserId = "1";
+            var author = new Author { Id = authorId, ApplicationUserId = applicationUserId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
+
+            _mockRepository
+                .Setup(repo => repo.GetByUserIdAsync(applicationUserId))
+                .ReturnsAsync(author);
+
+            // Act
+            var result = await _authorService.GetAuthorIdByApplicationUserIdAsync(applicationUserId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(authorId, result);
+            _mockRepository.Verify(repo => repo.GetByUserIdAsync(applicationUserId), Times.Once);
+        }
+
+        [Fact]
         public async Task AddAuthorAsync_CreatesAuthor()
         {
             // Arrange

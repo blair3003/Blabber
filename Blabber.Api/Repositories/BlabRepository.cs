@@ -71,5 +71,93 @@ namespace Blabber.Api.Repositories
             return existingBlab;
         }
 
+        public async Task AddLikeAsync(int blabId, int authorId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var blabTask = _context.Blabs
+                    .Include(b => b.Liked)
+                    .FirstOrDefaultAsync(b => b.Id == blabId);
+
+                var authorTask = _context.Authors
+                    .FirstOrDefaultAsync(a => a.Id == authorId);
+
+                await Task.WhenAll(blabTask, authorTask);
+
+                var blab = await blabTask;
+                var author = await authorTask;
+
+                if (blab == null)
+                {
+                    throw new KeyNotFoundException("Blab not found");
+                }
+
+                if (author == null)
+                {
+                    throw new KeyNotFoundException("Author not found");
+                }
+
+                if (blab.Liked.Contains(author))
+                {
+                    throw new InvalidOperationException("Author already likes Blab!");
+                }
+
+                blab.Liked.Add(author);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+        public async Task RemoveLikeAsync(int blabId, int authorId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var blabTask = _context.Blabs
+                    .Include(b => b.Liked)
+                    .FirstOrDefaultAsync(b => b.Id == blabId);
+
+                var authorTask = _context.Authors
+                    .FirstOrDefaultAsync(a => a.Id == authorId);
+
+                await Task.WhenAll(blabTask, authorTask);
+
+                var blab = await blabTask;
+                var author = await authorTask;
+
+                if (blab == null)
+                {
+                    throw new KeyNotFoundException("Blab not found");
+                }
+
+                if (author == null)
+                {
+                    throw new KeyNotFoundException("Author not found");
+                }
+
+                if (!blab.Liked.Contains(author))
+                {
+                    throw new InvalidOperationException("Author does not already like Blab!");
+                }
+
+                blab.Liked.Remove(author);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
     }
 }

@@ -28,6 +28,13 @@ namespace Blabber.Api.Services
             return author?.ApplicationUserId;
         }
 
+        public async Task<int?> GetAuthorIdByApplicationUserIdAsync(string userId)
+        {
+            var author = await _repository.GetByUserIdAsync(userId);
+
+            return author?.Id;
+        }
+
         public async Task<AuthorView?> AddAuthorAsync(AuthorCreateRequest request)
         {
             var newAuthor = await _repository.AddAsync(request.ToAuthor());

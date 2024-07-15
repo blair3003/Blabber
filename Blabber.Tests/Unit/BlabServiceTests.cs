@@ -131,6 +131,41 @@ namespace Blabber.Tests.Unit
             _mockRepository.Verify(repo => repo.UpdateAsync(blabId, request), Times.Once);
         }
 
+        [Fact]
+        public async Task AddBlabLikeAsync_LikesBlab()
+        {
+            // Arrange
+            var authorId = 1;
+            var blabId = 1;
+
+            _mockRepository
+                .Setup(repo => repo.AddLikeAsync(blabId, authorId));
+
+            // Act
+            await _blabService.AddBlabLikeAsync(blabId, authorId);
+
+            // Assert
+            _mockRepository.Verify(repo => repo.AddLikeAsync(blabId, authorId), Times.Once);
+        }
+
+        [Fact]
+        public async Task RemoveBlabLikeAsync_UnlikesBlab()
+        {
+            // Arrange
+            var authorId = 1;
+            var blabId = 1;
+
+            _mockRepository
+                .Setup(repo => repo.RemoveLikeAsync(blabId, authorId));
+
+            // Act
+            await _blabService.RemoveBlabLikeAsync(blabId, authorId);
+
+            // Assert
+            _mockRepository.Verify(repo => repo.RemoveLikeAsync(blabId, authorId), Times.Once);
+        }
+
+
         public void Dispose()
         {
             _mockRepository.Reset();

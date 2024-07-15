@@ -28,6 +28,14 @@ namespace Blabber.Api.Repositories
             return author;
         }
 
+        public async Task<Author?> GetByUserIdAsync(string userId)
+        {
+            var author = await _context.Authors
+                .FirstOrDefaultAsync(a => userId == a.ApplicationUserId);
+
+            return author;
+        }
+
         public async Task<Author?> AddAsync(Author author)
         {
             var applicationUser = await _context.Users.FindAsync(author.ApplicationUserId);

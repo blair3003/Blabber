@@ -87,6 +87,43 @@ namespace Blabber.Tests.Integration
         }
 
         [Fact]
+        public async Task GetByUserIdAsync_ReturnsAuthor()
+        {
+            var userId = "1";
+            var authorId = 1;
+            var user = new ApplicationUser { Id = userId, UserName = "TestUser", Email = "test@user.com" };
+            var author = new Author { Id = authorId, ApplicationUserId = userId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
+
+            using (var context = _fixture.CreateContext())
+            {
+                context.Users.Add(user);
+                context.Authors.Add(author);
+                await context.SaveChangesAsync();
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var repository = new AuthorRepository(context);
+                var result = await repository.GetByUserIdAsync(userId);
+
+                Assert.NotNull(result);
+                Assert.Equal("TestHandle", result.Handle);
+            }
+
+        }
+
+        [Fact]
+        public async Task GetByUserIdAsync_ReturnsNull_WhenAuthorDoesNotExist()
+        {
+            using (var context = _fixture.CreateContext())
+            {
+                var repository = new AuthorRepository(context);
+                var result = await repository.GetByUserIdAsync("999");
+                Assert.Null(result);
+            }
+        }
+
+        [Fact]
         public async Task AddAsync_CreatesAuthor()
         {
             var applicationUserId = "1";

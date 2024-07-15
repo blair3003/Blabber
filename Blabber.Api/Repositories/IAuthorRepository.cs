@@ -6,6 +6,7 @@ namespace Blabber.Api.Repositories
     {
         Task<IEnumerable<Author>> GetAllAsync();
         Task<Author?> GetByIdAsync(int id);
+        Task<Author?> GetByUserIdAsync(string userId);
         Task<Author?> AddAsync(Author author);
         Task<Author?> UpdateAsync(int id, AuthorUpdateRequest request);
     }
