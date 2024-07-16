@@ -48,5 +48,19 @@ namespace Blabber.Api.Services
 
             return updatedAuthor?.ToView();
         }
+
+        public async Task<bool> AddAuthorFollowerAsync(int authorId, int followerId)
+        {
+            var following = await _repository.AddFollowerAsync(authorId, followerId);
+
+            return following;
+        }
+
+        public async Task<bool> RemoveAuthorFollowerAsync(int authorId, int followerId)
+        {
+            var unfollowing = await _repository.RemoveFollowerAsync(authorId, followerId);
+
+            return unfollowing;
+        }
     }
 }

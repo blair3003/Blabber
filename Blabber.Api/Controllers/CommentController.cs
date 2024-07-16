@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace Blabber.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/comments")]
     public class CommentController(ICommentService commentService, IAuthorService authorService, ILogger<CommentController> logger) : ControllerBase
     {
         private readonly ICommentService _commentService = commentService;
@@ -25,25 +25,24 @@ namespace Blabber.Api.Controllers
             try
             {
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                    ?? throw new AuthenticationException("User not authenticated.");
+                    ?? throw new AuthenticationException("User not authenticated!");
 
                 var authorUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(request.AuthorId)
-                    ?? throw new InvalidOperationException("GetApplicationUserIdByAuthorIdAsync returned null.");
+                    ?? throw new KeyNotFoundException("Author not found!");
 
                 if (currentUserId != authorUserId)
                 {
-                    return Forbid("Access denied.");
+                    throw new UnauthorizedAccessException("User not authorized!");
                 }
 
                 var newComment = await _commentService.AddCommentAsync(request)
-                    ?? throw new InvalidOperationException("AddCommentAsync returned null.");
+                    ?? throw new InvalidOperationException("Cannot add Comment!");
 
                 return CreatedAtAction(nameof(CreateComment), new { id = newComment.Id }, newComment);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating Comment.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return ControllerHelper.HandleException(ex, _logger);
             }
         }
     }

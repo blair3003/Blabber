@@ -71,5 +71,53 @@ namespace Blabber.Api.Repositories
 
             return existingAuthor;
         }
+
+        public async Task<bool> AddFollowerAsync(int authorId, int followerId)
+        {
+            if (authorId == followerId)
+            {
+                return false;
+            }
+
+            var author = await _context.Authors
+                .Include(a => a.Followers)
+                .FirstOrDefaultAsync(a => a.Id == authorId);
+
+            var follower = await _context.Authors.FindAsync(followerId);
+
+            if (author == null || follower == null || author.Followers.Contains(follower))
+            {
+                return false;
+            }
+
+            author.Followers.Add(follower);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> RemoveFollowerAsync(int authorId, int followerId)
+        {
+            if (authorId == followerId)
+            {
+                return false;
+            }
+
+            var author = await _context.Authors
+                .Include(a => a.Followers)
+                .FirstOrDefaultAsync(a => a.Id == authorId);
+
+            var follower = await _context.Authors.FindAsync(followerId);
+
+            if (author == null || follower == null || !author.Followers.Contains(follower))
+            {
+                return false;
+            }
+
+            author.Followers.Remove(follower);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace Blabber.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/blabs")]
     public class BlabController(IBlabService blabService, IAuthorService authorService, ILogger<BlabController> logger) : ControllerBase
     {
         private readonly IBlabService _blabService = blabService;
@@ -24,8 +24,7 @@ namespace Blabber.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving Blabs.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return ControllerHelper.HandleException(ex, _logger);
             }
         }
 
@@ -34,19 +33,14 @@ namespace Blabber.Api.Controllers
         {
             try
             {
-                var result = await _blabService.GetBlabByIdAsync(id);
-
-                if (result == null)
-                {
-                    return NotFound();
-                }
+                var result = await _blabService.GetBlabByIdAsync(id)
+                    ?? throw new KeyNotFoundException("Blab not found!");
 
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving Blab.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return ControllerHelper.HandleException(ex, _logger);
             }
         }
 
@@ -61,25 +55,24 @@ namespace Blabber.Api.Controllers
             try
             {
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                    ?? throw new AuthenticationException("User not authenticated.");
+                    ?? throw new AuthenticationException("User not authenticated!");
 
                 var authorUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(request.AuthorId)
-                    ?? throw new InvalidOperationException("GetApplicationUserIdByAuthorIdAsync returned null.");
+                    ?? throw new KeyNotFoundException("Author not found!");
 
                 if (currentUserId != authorUserId)
                 {
-                    return Forbid("Access denied.");
+                    throw new UnauthorizedAccessException("User not authorized!");
                 }
 
                 var newBlab = await _blabService.AddBlabAsync(request)
-                    ?? throw new InvalidOperationException("AddBlabAsync returned null.");
+                    ?? throw new InvalidOperationException("Cannot add Blab!");
 
                 return CreatedAtAction(nameof(CreateBlab), new { id = newBlab.Id }, newBlab);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating Blab.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return ControllerHelper.HandleException(ex, _logger);
             }
         }
 
@@ -93,33 +86,28 @@ namespace Blabber.Api.Controllers
 
             try
             {
-                var blab = await _blabService.GetBlabByIdAsync(id);
-
-                if (blab == null)
-                {
-                    return NotFound();
-                }
+                var blab = await _blabService.GetBlabByIdAsync(id)
+                    ?? throw new KeyNotFoundException("Blab not found!");
 
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                    ?? throw new AuthenticationException("User not authenticated.");
+                    ?? throw new AuthenticationException("User not authenticated!");
 
                 var authorUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(blab.Author!.Id)
-                    ?? throw new InvalidOperationException("GetApplicationUserIdByAuthorIdAsync returned null.");
+                    ?? throw new KeyNotFoundException("Author not found!");
 
                 if (currentUserId != authorUserId)
                 {
-                    throw new AuthenticationException("User not Author.");
+                    throw new UnauthorizedAccessException("User not authorized!");
                 }
 
                 var updatedBlab = await _blabService.UpdateBlabAsync(id, request)
-                    ?? throw new InvalidOperationException("UpdateBlabAsync returned null.");
+                    ?? throw new InvalidOperationException("Cannot update Blab!");
 
                 return Ok(updatedBlab);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating Blab.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return ControllerHelper.HandleException(ex, _logger);
             }
         }
 
@@ -129,18 +117,18 @@ namespace Blabber.Api.Controllers
             try
             {
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                    ?? throw new AuthenticationException("User not authenticated.");
+                    ?? throw new AuthenticationException("User not authenticated!");
 
                 var authorId = await _authorService.GetAuthorIdByApplicationUserIdAsync(currentUserId)
-                    ?? throw new InvalidOperationException("GetAuthorIdByApplicationUserIdAsync returned null.");
+                    ?? throw new KeyNotFoundException("Author not found!");
 
-                await _blabService.AddBlabLikeAsync(id, authorId);
-                return Ok();
+                var like = await _blabService.AddBlabLikeAsync(id, authorId);
+
+                return Ok(like);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error liking Blab.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return ControllerHelper.HandleException(ex, _logger);
             }
         }
 
@@ -150,18 +138,18 @@ namespace Blabber.Api.Controllers
             try
             {
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                    ?? throw new AuthenticationException("User not authenticated.");
+                    ?? throw new AuthenticationException("User not authenticated!");
 
                 var authorId = await _authorService.GetAuthorIdByApplicationUserIdAsync(currentUserId)
-                    ?? throw new InvalidOperationException("GetAuthorIdByApplicationUserIdAsync returned null.");
+                    ?? throw new KeyNotFoundException("Author not found!");
 
-                await _blabService.RemoveBlabLikeAsync(id, authorId);
-                return Ok();
+                var unlike = await _blabService.RemoveBlabLikeAsync(id, authorId);
+
+                return Ok(unlike);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error unliking Blab.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+                return ControllerHelper.HandleException(ex, _logger);
             }
         }
     }

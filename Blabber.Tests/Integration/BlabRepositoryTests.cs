@@ -196,7 +196,9 @@ namespace Blabber.Tests.Integration
             using (var context = _fixture.CreateContext())
             {
                 var repository = new BlabRepository(context);
-                await repository.AddLikeAsync(blabId, authorId);
+                var result = await repository.AddLikeAsync(blabId, authorId);
+
+                Assert.True(result);
             }
 
             using (var context = _fixture.CreateContext())
@@ -232,7 +234,9 @@ namespace Blabber.Tests.Integration
             using (var context = _fixture.CreateContext())
             {
                 var repository = new BlabRepository(context);
-                await repository.RemoveLikeAsync(blabId, authorId);
+                var result = await repository.RemoveLikeAsync(blabId, authorId);
+
+                Assert.True(result);
             }
 
             using (var context = _fixture.CreateContext())

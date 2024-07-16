@@ -166,6 +166,44 @@ namespace Blabber.Tests.Unit
             _mockRepository.Verify(repo => repo.UpdateAsync(authorId, request), Times.Once);
         }
 
+        [Fact]
+        public async Task AddAuthorFollowerAsync_AddsAuthor()
+        {
+            // Arrange
+            var authorId = 1;
+            var followerId = 2;
+
+            _mockRepository
+                .Setup(repo => repo.AddFollowerAsync(authorId, followerId))
+                .ReturnsAsync(true);
+
+            // Act
+            var result = await _authorService.AddAuthorFollowerAsync(authorId, followerId);
+
+            // Assert
+            Assert.True(result);
+            _mockRepository.Verify(repo => repo.AddFollowerAsync(authorId, followerId), Times.Once);
+        }
+
+        [Fact]
+        public async Task RemoveAuthorFollowerAsync_RemoveAuthor()
+        {
+            // Arrange
+            var authorId = 1;
+            var followerId = 2;
+
+            _mockRepository
+                .Setup(repo => repo.RemoveFollowerAsync(authorId, followerId))
+                .ReturnsAsync(true);
+
+            // Act
+            var result = await _authorService.RemoveAuthorFollowerAsync(authorId, followerId);
+
+            // Assert
+            Assert.True(result);
+            _mockRepository.Verify(repo => repo.RemoveFollowerAsync(authorId, followerId), Times.Once);
+        }
+
         public void Dispose()
         {
             _mockRepository.Reset();

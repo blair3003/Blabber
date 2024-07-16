@@ -9,50 +9,21 @@ namespace Blabber.Api.Repositories
 
         public async Task<Comment?> AddAsync(Comment comment)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
+            var blab = await _context.Blabs.FindAsync(comment.BlabId);
+            var author = await _context.Authors.FindAsync(comment.AuthorId);
+            var parent = comment.ParentId.HasValue
+                ? await _context.Comments.FindAsync(comment.ParentId.Value)
+                : null;
 
-            try
+            if (blab == null || author == null || (comment.ParentId.HasValue && parent == null))
             {
-                var blabTask = _context.Blabs.FindAsync(comment.BlabId);
-                var authorTask = _context.Authors.FindAsync(comment.AuthorId);
-                var parentTask = ValueTask.FromResult<Comment?>(null);
-
-                if (comment.ParentId.HasValue)
-                {
-                    parentTask = _context.Comments.FindAsync(comment.ParentId.Value);
-                }
-
-                var blab = await blabTask;
-                var author = await authorTask;
-                var parent = await parentTask;
-
-                if (blab == null)
-                {
-                    throw new ArgumentException("Invalid BlabId");
-                }
-
-                if (author == null)
-                {
-                    throw new ArgumentException("Invalid AuthorId");
-                }
-
-                if (comment.ParentId.HasValue && parent == null)
-                {
-                    throw new ArgumentException("Invalid ParentId");
-                }
-
-                await _context.Comments.AddAsync(comment);
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-
-                return comment;
+                return null;
             }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+
+            await _context.Comments.AddAsync(comment);
+            await _context.SaveChangesAsync();
+
+            return comment;
         }
 
     }

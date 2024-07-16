@@ -2,6 +2,7 @@
 using Blabber.Api.Models;
 using Blabber.Api.Repositories;
 using CommunityApp.Tests.Fixtures;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blabber.Tests.Integration
 {
@@ -215,6 +216,98 @@ namespace Blabber.Tests.Integration
                 var result = await repository.UpdateAsync(wrongAuthorId, request);
                 Assert.Null(result);
             }
+        }
+
+        [Fact]
+        public async Task AddFollowerAsync_AddsFollower()
+        {
+            var userId1 = "1";
+            var userId2 = "2";
+            var authorId1 = 1;
+            var authorId2 = 2;
+
+            var users = new List<ApplicationUser>
+            {
+                new() { Id = userId1, UserName = "TestUser1", Email = "test@user.com" },
+                new() { Id = userId2, UserName = "TestUser2", Email = "test2@user.com" }
+            };
+
+            var authors = new List<Author>
+            {
+                new() { Id = authorId1, ApplicationUserId = userId1, Handle = "TestHandle1", DisplayName = "TestDisplayName1" },
+                new() { Id = authorId2, ApplicationUserId = userId2, Handle = "TestHandle2", DisplayName = "TestDisplayName2" }
+            };
+
+            using (var context = _fixture.CreateContext())
+            {
+                context.Users.AddRange(users);
+                context.Authors.AddRange(authors);
+                await context.SaveChangesAsync();
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var repository = new AuthorRepository(context);
+                var result = await repository.AddFollowerAsync(authorId1, authorId2);
+
+                Assert.True(result);
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var author = await context.Authors
+                    .Include(a => a.Followers)
+                    .FirstOrDefaultAsync(a => a.Id == authorId1);
+
+                Assert.NotNull(author);
+                Assert.Single(author.Followers);
+            }
+        }
+
+        [Fact]
+        public async Task RemoveFollowerAsync_RemovesFollower()
+        {
+            var userId1 = "1";
+            var userId2 = "2";
+            var authorId1 = 1;
+            var authorId2 = 2;
+
+            var users = new List<ApplicationUser>
+            {
+                new() { Id = userId1, UserName = "TestUser1", Email = "test@user.com" },
+                new() { Id = userId2, UserName = "TestUser2", Email = "test2@user.com" }
+            };
+
+            var author1 = new Author { Id = authorId1, ApplicationUserId = userId1, Handle = "TestHandle1", DisplayName = "TestDisplayName1" };
+            var author2 = new Author { Id = authorId2, ApplicationUserId = userId2, Handle = "TestHandle2", DisplayName = "TestDisplayName2" };
+
+            using (var context = _fixture.CreateContext())
+            {
+                context.Users.AddRange(users);
+                context.Authors.Add(author2);
+                author1.Followers.Add(author2);
+                context.Authors.Add(author1);
+                await context.SaveChangesAsync();
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var repository = new AuthorRepository(context);
+                var result = await repository.RemoveFollowerAsync(authorId1, authorId2);
+
+                Assert.True(result);
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var author = await context.Authors
+                    .Include(a => a.Followers)
+                    .FirstOrDefaultAsync(a => a.Id == authorId1);
+
+                Assert.NotNull(author);
+                Assert.Empty(author.Followers);
+            }
+
         }
 
         public void Dispose()
