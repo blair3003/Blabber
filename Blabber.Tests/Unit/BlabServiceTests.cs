@@ -96,7 +96,7 @@ namespace Blabber.Tests.Unit
             var blab = new Blab { Id = blabId, AuthorId = authorId, Body = "New Blab" };
 
             _mockRepository
-                .Setup(repo => repo.AddAsync(It.IsAny<Blab>()))
+                .Setup(repo => repo.AddAsync(request))
                 .ReturnsAsync(blab);
 
             // Act
@@ -106,11 +106,11 @@ namespace Blabber.Tests.Unit
             Assert.NotNull(result);
             Assert.Equal(blabId, result.Id);
             Assert.Equal("New Blab", result.Body);
-            _mockRepository.Verify(repo => repo.AddAsync(It.IsAny<Blab>()), Times.Once);
+            _mockRepository.Verify(repo => repo.AddAsync(request), Times.Once);
         }
 
         [Fact]
-        public async Task UpdateAuthorAsync_ModifiesAuthor()
+        public async Task UpdateBlabAsync_ModifiesBlab()
         {
             // Arrange
             var authorId = 1;

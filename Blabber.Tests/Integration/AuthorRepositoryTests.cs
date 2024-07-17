@@ -128,9 +128,8 @@ namespace Blabber.Tests.Integration
         public async Task AddAsync_CreatesAuthor()
         {
             var applicationUserId = "1";
-            var authorId = 1;
             var user = new ApplicationUser { Id = applicationUserId, UserName = "TestUser", Email = "test@user.com" };
-            var author = new Author { Id = authorId, ApplicationUserId = applicationUserId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
+            var request = new AuthorCreateRequest { ApplicationUserId = applicationUserId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
 
             using (var context = _fixture.CreateContext())
             {
@@ -141,14 +140,7 @@ namespace Blabber.Tests.Integration
             using (var context = _fixture.CreateContext())
             {
                 var repository = new AuthorRepository(context);
-                var newAuthor = await repository.AddAsync(author);
-
-                Assert.NotNull(newAuthor);
-            }
-
-            using (var context = _fixture.CreateContext())
-            {
-                var result = await context.Authors.FindAsync(authorId);
+                var result = await repository.AddAsync(request);
 
                 Assert.NotNull(result);
                 Assert.Equal("TestHandle", result.Handle);
@@ -158,12 +150,13 @@ namespace Blabber.Tests.Integration
         [Fact]
         public async Task AddAsync_ReturnsNull_WhenUserDoesNotExist()
         {
-            var author = new Author { Id = 1, ApplicationUserId = "999", Handle = "TestHandle", DisplayName = "TestDisplayName" };
+            var applicationUserId = "999";
+            var request = new AuthorCreateRequest { ApplicationUserId = applicationUserId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
 
             using (var context = _fixture.CreateContext())
             {
                 var repository = new AuthorRepository(context);
-                var newAuthor = await repository.AddAsync(author);
+                var newAuthor = await repository.AddAsync(request);
 
                 Assert.Null(newAuthor);
             }

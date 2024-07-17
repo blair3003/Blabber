@@ -9,9 +9,7 @@
                 Id = author.Id,
                 Handle = author.Handle,
                 DisplayName = author.DisplayName,
-                DisplayPic = author.DisplayPic,
-                FollowingCount = author.Following.Count,
-                FollowerCount = author.Followers.Count
+                DisplayPic = author.DisplayPic
             };
         }
 

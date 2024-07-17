@@ -88,7 +88,7 @@ namespace Blabber.Tests.Unit
             var author = new Author { Id = authorId, ApplicationUserId = applicationUserId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
 
             _mockRepository
-                .Setup(repo => repo.GetByIdAsync(authorId))
+                .Setup(repo => repo.GetByIdThinAsync(authorId))
                 .ReturnsAsync(author);
 
             // Act
@@ -97,7 +97,7 @@ namespace Blabber.Tests.Unit
             // Assert
             Assert.NotNull(result);
             Assert.Equal(applicationUserId, result);
-            _mockRepository.Verify(repo => repo.GetByIdAsync(authorId), Times.Once);
+            _mockRepository.Verify(repo => repo.GetByIdThinAsync(authorId), Times.Once);
         }
 
         [Fact]
@@ -131,7 +131,7 @@ namespace Blabber.Tests.Unit
             var author = new Author { Id = authorId, ApplicationUserId = applicationUserId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
 
             _mockRepository
-                .Setup(repo => repo.AddAsync(It.IsAny<Author>()))
+                .Setup(repo => repo.AddAsync(request))
                 .ReturnsAsync(author);
 
             // Act
@@ -141,7 +141,7 @@ namespace Blabber.Tests.Unit
             Assert.NotNull(result);
             Assert.Equal(authorId, result.Id);
             Assert.Equal("TestHandle", result.Handle);
-            _mockRepository.Verify(repo => repo.AddAsync(It.IsAny<Author>()), Times.Once);
+            _mockRepository.Verify(repo => repo.AddAsync(request), Times.Once);
         }
 
         [Fact]

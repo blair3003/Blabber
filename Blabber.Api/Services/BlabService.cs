@@ -23,7 +23,7 @@ namespace Blabber.Api.Services
 
         public async Task<BlabView?> AddBlabAsync(BlabCreateRequest request)
         {
-            var newBlab = await _repository.AddAsync(request.ToBlab());
+            var newBlab = await _repository.AddAsync(request);
 
             return newBlab?.ToView();
         }

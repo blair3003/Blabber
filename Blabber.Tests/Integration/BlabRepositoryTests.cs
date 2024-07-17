@@ -96,10 +96,9 @@ namespace Blabber.Tests.Integration
         public async Task AddAsync_CreatesBlab()
         {
             var authorId = 1;
-            var blabId = 1;
             var user = new ApplicationUser { Id = "1", UserName = "TestUser", Email = "test@user.com" };
             var author = new Author { Id = authorId, ApplicationUserId = "1", Handle = "TestHandle", DisplayName = "TestDisplayName" };
-            var blab = new Blab { Id = blabId, AuthorId = authorId, Body = "Test Blab" };
+            var request = new BlabCreateRequest { AuthorId = authorId, Body = "Test Blab" };
 
             using (var context = _fixture.CreateContext())
             {
@@ -111,14 +110,7 @@ namespace Blabber.Tests.Integration
             using (var context = _fixture.CreateContext())
             {
                 var repository = new BlabRepository(context);
-                var result = await repository.AddAsync(blab);
-
-                Assert.NotNull(result);
-            }
-
-            using (var context = _fixture.CreateContext())
-            {
-                var result = await context.Blabs.FindAsync(blabId);
+                var result = await repository.AddAsync(request);
 
                 Assert.NotNull(result);
                 Assert.Equal("Test Blab", result.Body);

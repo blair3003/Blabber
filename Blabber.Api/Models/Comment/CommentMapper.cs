@@ -26,17 +26,19 @@
             };
         }
 
-        public static CommentEditRequest ToCommentEditRequest(this Comment comment)
+        public static CommentUpdateRequest ToCommentUpdateRequest(this Comment comment)
         {
-            return new CommentEditRequest
+            return new CommentUpdateRequest
             {
+                Id = comment.Id,
                 Body = comment.Body
             };
         }
 
-        public static void EditComment(this Comment comment, CommentEditRequest request)
+        public static void UpdateComment(this Comment comment, CommentUpdateRequest request)
         {
             comment.Body = request.Body;
+            comment.UpdatedAt = DateTime.UtcNow;
         }
     }
 }

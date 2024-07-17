@@ -56,6 +56,7 @@ namespace Blabber.Api.Models
         {
             return new BlabUpdateRequest
             {
+                Id = blab.Id,
                 Body = blab.Body
             };
         }

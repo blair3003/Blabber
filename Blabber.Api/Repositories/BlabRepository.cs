@@ -35,8 +35,10 @@ namespace Blabber.Api.Repositories
             return blab;
         }
 
-        public async Task<Blab?> AddAsync(Blab blab)
+        public async Task<Blab?> AddAsync(BlabCreateRequest request)
         {
+            var blab = request.ToBlab();
+
             var author = await _context.Authors.FindAsync(blab.AuthorId);
 
             if (author == null)

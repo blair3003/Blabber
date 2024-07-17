@@ -6,7 +6,7 @@ namespace Blabber.Api.Repositories
     {
         Task<(IEnumerable<Blab> Blabs, int TotalCount)> GetAsync(int pageNumber, int pageSize);
         Task<Blab?> GetByIdAsync(int id);
-        Task<Blab?> AddAsync(Blab blab);
+        Task<Blab?> AddAsync(BlabCreateRequest request);
         Task<Blab?> UpdateAsync(int id, BlabUpdateRequest request);
         Task<bool> AddLikeAsync(int blabId, int authorId);
         Task<bool> RemoveLikeAsync(int blabId, int authorId);
