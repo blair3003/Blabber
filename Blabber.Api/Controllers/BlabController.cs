@@ -1,5 +1,6 @@
 ﻿using Blabber.Api.Models;
 using Blabber.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Authentication;
 using System.Security.Claims;
@@ -8,10 +9,11 @@ namespace Blabber.Api.Controllers
 {
     [ApiController]
     [Route("api/blabs")]
-    public class BlabController(IBlabService blabService, IAuthorService authorService, ILogger<BlabController> logger) : ControllerBase
+    public class BlabController(IBlabService blabService, IAuthorService authorService, IAuthorizationService authorizationService, ILogger<BlabController> logger) : ControllerBase
     {
         private readonly IBlabService _blabService = blabService;
         private readonly IAuthorService _authorService = authorService;
+        private readonly IAuthorizationService _authorizationService = authorizationService;
         private readonly ILogger<BlabController> _logger = logger;
 
         [HttpGet]
@@ -45,6 +47,7 @@ namespace Blabber.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateBlab([FromBody] BlabCreateRequest request)
         {
             if (!ModelState.IsValid)
@@ -54,15 +57,14 @@ namespace Blabber.Api.Controllers
 
             try
             {
-                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                    ?? throw new AuthenticationException("User not authenticated!");
-
-                var authorUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(request.AuthorId)
+                var applicationUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(request.AuthorId)
                     ?? throw new KeyNotFoundException("Author not found!");
 
-                if (currentUserId != authorUserId)
+                var checkAuthorUser = await _authorizationService.AuthorizeAsync(User, applicationUserId, "AuthorUser");
+
+                if (!checkAuthorUser.Succeeded)
                 {
-                    throw new UnauthorizedAccessException("User not authorized!");
+                    throw new UnauthorizedAccessException("User not authorized to create Blab!");
                 }
 
                 var newBlab = await _blabService.AddBlabAsync(request)
@@ -77,6 +79,7 @@ namespace Blabber.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateBlab(int id, [FromBody] BlabUpdateRequest request)
         {
             if (!ModelState.IsValid)
@@ -89,15 +92,21 @@ namespace Blabber.Api.Controllers
                 var blab = await _blabService.GetBlabByIdAsync(id)
                     ?? throw new KeyNotFoundException("Blab not found!");
 
-                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                    ?? throw new AuthenticationException("User not authenticated!");
-
-                var authorUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(blab.Author!.Id)
+                var applicationUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(blab.Author!.Id)
                     ?? throw new KeyNotFoundException("Author not found!");
 
-                if (currentUserId != authorUserId)
+                var checkAuthorUser = await _authorizationService.AuthorizeAsync(User, applicationUserId, "AuthorUser");
+
+                if (!checkAuthorUser.Succeeded)
                 {
-                    throw new UnauthorizedAccessException("User not authorized!");
+                    throw new UnauthorizedAccessException("User not authorized to update Blab!");
+                }
+
+                var checkBlabUpdateTimeLimit = await _authorizationService.AuthorizeAsync(User, blab.CreatedAt, "BlabUpdateTimeLimit");
+
+                if (!checkBlabUpdateTimeLimit.Succeeded)
+                {
+                    throw new UnauthorizedAccessException("Blab update time limit expired!");
                 }
 
                 var updatedBlab = await _blabService.UpdateBlabAsync(id, request)
@@ -111,7 +120,9 @@ namespace Blabber.Api.Controllers
             }
         }
 
+
         [HttpPost("{id}/like")]
+        [Authorize]
         public async Task<IActionResult> LikeBlab(int id)
         {
             try
@@ -122,9 +133,14 @@ namespace Blabber.Api.Controllers
                 var authorId = await _authorService.GetAuthorIdByApplicationUserIdAsync(currentUserId)
                     ?? throw new KeyNotFoundException("Author not found!");
 
-                var like = await _blabService.AddBlabLikeAsync(id, authorId);
+                var result = await _blabService.AddBlabLikeAsync(id, authorId);
 
-                return Ok(like);
+                if (!result)
+                {
+                    throw new InvalidOperationException("Cannot like Blab!");
+                }
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -133,6 +149,7 @@ namespace Blabber.Api.Controllers
         }
 
         [HttpPost("{id}/unlike")]
+        [Authorize]
         public async Task<IActionResult> UnLikeBlab(int id)
         {
             try
@@ -143,9 +160,14 @@ namespace Blabber.Api.Controllers
                 var authorId = await _authorService.GetAuthorIdByApplicationUserIdAsync(currentUserId)
                     ?? throw new KeyNotFoundException("Author not found!");
 
-                var unlike = await _blabService.RemoveBlabLikeAsync(id, authorId);
+                var result = await _blabService.RemoveBlabLikeAsync(id, authorId);
 
-                return Ok(unlike);
+                if (!result)
+                {
+                    throw new InvalidOperationException("Cannot unlike Blab!");
+                }
+
+                return Ok(result);
             }
             catch (Exception ex)
             {

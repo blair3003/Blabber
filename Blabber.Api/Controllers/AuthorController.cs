@@ -1,5 +1,6 @@
 ﻿using Blabber.Api.Models;
 using Blabber.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Authentication;
 using System.Security.Claims;
@@ -8,9 +9,10 @@ namespace Blabber.Api.Controllers
 {
     [ApiController]
     [Route("api/authors")]
-    public class AuthorController(IAuthorService authorService, ILogger<AuthorController> logger) : ControllerBase
+    public class AuthorController(IAuthorService authorService, IAuthorizationService authorizationService, ILogger<AuthorController> logger) : ControllerBase
     {
         private readonly IAuthorService _authorService = authorService;
+        private readonly IAuthorizationService _authorizationService = authorizationService;
         private readonly ILogger<AuthorController> _logger = logger;
 
         [HttpGet]
@@ -45,6 +47,7 @@ namespace Blabber.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateAuthor([FromBody] AuthorCreateRequest request)
         {
             if (!ModelState.IsValid)
@@ -54,12 +57,11 @@ namespace Blabber.Api.Controllers
 
             try
             {
-                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                    ?? throw new AuthenticationException("User not authenticated!");
+                var checkAuthorUser = await _authorizationService.AuthorizeAsync(User, request.ApplicationUserId, "AuthorUser");
 
-                if (currentUserId != request.ApplicationUserId)
+                if (!checkAuthorUser.Succeeded)
                 {
-                    throw new UnauthorizedAccessException("User not authorized!");
+                    throw new UnauthorizedAccessException("User not authorized to create Author!");
                 }
 
                 var newAuthor = await _authorService.AddAuthorAsync(request)
@@ -74,6 +76,7 @@ namespace Blabber.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateAuthor(int id, [FromBody] AuthorUpdateRequest request)
         {
             if (!ModelState.IsValid)
@@ -83,15 +86,14 @@ namespace Blabber.Api.Controllers
 
             try
             {
-                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                    ?? throw new AuthenticationException("User not authenticated!");
-
-                var authorUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(id)
+                var applicationUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(id)
                     ?? throw new KeyNotFoundException("Author not found!");
 
-                if (currentUserId != authorUserId)
+                var checkAuthorUser = await _authorizationService.AuthorizeAsync(User, applicationUserId, "AuthorUser");
+
+                if (!checkAuthorUser.Succeeded)
                 {
-                    throw new UnauthorizedAccessException("User not authorized!");
+                    throw new UnauthorizedAccessException("User not authorized to update Author!");
                 }
 
                 var updatedAuthor = await _authorService.UpdateAuthorAsync(id, request)
@@ -106,6 +108,7 @@ namespace Blabber.Api.Controllers
         }
 
         [HttpPost("{id}/follow")]
+        [Authorize]
         public async Task<IActionResult> FollowAuthor(int id)
         {
             try
@@ -117,6 +120,7 @@ namespace Blabber.Api.Controllers
                     ?? throw new KeyNotFoundException("Follower not found!");
 
                 var result = await _authorService.AddAuthorFollowerAsync(id, followerId);
+
                 if (!result)
                 {
                     throw new InvalidOperationException("Cannot follow Author!");
@@ -131,6 +135,7 @@ namespace Blabber.Api.Controllers
         }
 
         [HttpPost("{id}/unfollow")]
+        [Authorize]
         public async Task<IActionResult> UnfollowAuthor(int id)
         {
             try

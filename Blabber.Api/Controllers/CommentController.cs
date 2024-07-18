@@ -2,18 +2,17 @@
 using Blabber.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Authentication;
-using System.Security.Claims;
 
 namespace Blabber.Api.Controllers
 {
     [ApiController]
     [Route("api/comments")]
     [Authorize]
-    public class CommentController(ICommentService commentService, IAuthorService authorService, ILogger<CommentController> logger) : ControllerBase
+    public class CommentController(ICommentService commentService, IAuthorService authorService, IAuthorizationService authorizationService, ILogger<CommentController> logger) : ControllerBase
     {
         private readonly ICommentService _commentService = commentService;
         private readonly IAuthorService _authorService = authorService;
+        private readonly IAuthorizationService _authorizationService = authorizationService;
         private readonly ILogger<CommentController> _logger = logger;
 
         [HttpPost]
@@ -26,15 +25,14 @@ namespace Blabber.Api.Controllers
 
             try
             {
-                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                    ?? throw new AuthenticationException("User not authenticated!");
-
-                var authorUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(request.AuthorId)
+                var applicationUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(request.AuthorId)
                     ?? throw new KeyNotFoundException("Author not found!");
 
-                if (currentUserId != authorUserId)
+                var checkAuthorUser = await _authorizationService.AuthorizeAsync(User, applicationUserId, "AuthorUser");
+
+                if (!checkAuthorUser.Succeeded)
                 {
-                    throw new UnauthorizedAccessException("User not authorized!");
+                    throw new UnauthorizedAccessException("User not authorized to create Comment!");
                 }
 
                 var newComment = await _commentService.AddCommentAsync(request)
@@ -58,18 +56,24 @@ namespace Blabber.Api.Controllers
 
             try
             {
-                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                    ?? throw new AuthenticationException("User not authenticated!");
-
                 var comment = await _commentService.GetCommentByIdAsync(id)
                     ?? throw new KeyNotFoundException("Comment not found!");
 
-                var authorUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(comment.Author!.Id)
+                var applicationUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(comment.Author!.Id)
                     ?? throw new KeyNotFoundException("Author not found!");
 
-                if (currentUserId != authorUserId)
+                var checkAuthorUser = await _authorizationService.AuthorizeAsync(User, applicationUserId, "AuthorUser");
+
+                if (!checkAuthorUser.Succeeded)
                 {
-                    throw new UnauthorizedAccessException("User not authorized!");
+                    throw new UnauthorizedAccessException("User not authorized to update Comment!");
+                }
+
+                var checkCommentUpdateTimeLimit = await _authorizationService.AuthorizeAsync(User, comment.CreatedAt, "CommentUpdateTimeLimit");
+
+                if (!checkCommentUpdateTimeLimit.Succeeded)
+                {
+                    throw new UnauthorizedAccessException("Comment update time limit expired!");
                 }
 
                 var updatedComment = await _commentService.UpdateCommentAsync(id, request)

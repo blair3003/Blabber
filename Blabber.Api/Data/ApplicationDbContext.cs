@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Blabber.Api.Models;
-using Microsoft.Extensions.Hosting;
 
 namespace Blabber.Api.Data
 {
