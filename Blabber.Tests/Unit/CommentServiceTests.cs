@@ -85,6 +85,30 @@ namespace Blabber.Tests.Unit
             _mockRepository.Verify(repo => repo.UpdateAsync(commentId, request), Times.Once);
         }
 
+        [Fact]
+        public async Task DeleteCommentAsync_SoftDeletesComment()
+        {
+            // Arrange
+            var authorId = 1;
+            var blabId = 1;
+            var commentId = 1;
+            var request = new CommentUpdateRequest { Body = "Updated Comment" };
+            var deletedComment = new Comment { Id = commentId, BlabId = blabId, AuthorId = authorId, Body = "Deleted Comment", IsDeleted = true };
+
+            _mockRepository
+                .Setup(repo => repo.DeleteAsync(commentId))
+                .ReturnsAsync(deletedComment);
+
+            // Act
+            var result = await _commentService.DeleteCommentAsync(commentId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.True(result.IsDeleted);
+            Assert.Equal("[Removed]", result.Body);
+            _mockRepository.Verify(repo => repo.DeleteAsync(commentId), Times.Once);
+        }
+
         public void Dispose()
         {
             _mockRepository.Reset();

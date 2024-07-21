@@ -168,6 +168,40 @@ namespace Blabber.Tests.Integration
         }
 
         [Fact]
+        public async Task DeleteAsync_SoftDeletesBlab()
+        {
+            var authorId = 1;
+            var blabId = 1;
+            var user = new ApplicationUser { Id = "1", UserName = "TestUser", Email = "test@user.com" };
+            var author = new Author { Id = authorId, ApplicationUserId = "1", Handle = "TestHandle", DisplayName = "TestDisplayName" };
+            var blab = new Blab { Id = blabId, AuthorId = authorId, Body = "Test Blab" };
+
+            using (var context = _fixture.CreateContext())
+            {
+                context.Users.Add(user);
+                context.Authors.Add(author);
+                context.Blabs.Add(blab);
+                await context.SaveChangesAsync();
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var repository = new BlabRepository(context);
+                var result = await repository.DeleteAsync(blabId);
+
+                Assert.NotNull(result);
+            }
+
+            using (var context = _fixture.CreateContext())
+            {
+                var result = await context.Blabs.FindAsync(blabId);
+
+                Assert.NotNull(result);
+                Assert.True(result.IsDeleted);
+            }
+        }
+
+        [Fact]
         public async Task AddLikeAsync_LikesBlab()
         {
             var userId = "1";

@@ -132,6 +132,28 @@ namespace Blabber.Tests.Unit
         }
 
         [Fact]
+        public async Task DeleteBlabAsync_SoftDeletesBlab()
+        {
+            // Arrange
+            var authorId = 1;
+            var blabId = 1;
+            var deletedBlab = new Blab { Id = blabId, AuthorId = authorId, Body = "Deleted Blab", IsDeleted = true };
+
+            _mockRepository
+                .Setup(repo => repo.DeleteAsync(blabId))
+                .ReturnsAsync(deletedBlab);
+
+            // Act
+            var result = await _blabService.DeleteBlabAsync(blabId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.True(result.IsDeleted);
+            Assert.Equal("[Removed]", result.Body);
+            _mockRepository.Verify(repo => repo.DeleteAsync(blabId), Times.Once);
+        }
+
+        [Fact]
         public async Task AddBlabLikeAsync_LikesBlab()
         {
             // Arrange
