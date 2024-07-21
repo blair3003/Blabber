@@ -120,6 +120,41 @@ namespace Blabber.Api.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteBlab(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var blab = await _blabService.GetBlabByIdAsync(id)
+                    ?? throw new KeyNotFoundException("Blab not found!");
+
+                var applicationUserId = await _authorService.GetApplicationUserIdByAuthorIdAsync(blab.Author!.Id)
+                    ?? throw new KeyNotFoundException("Author not found!");
+
+                var checkAuthorUser = await _authorizationService.AuthorizeAsync(User, applicationUserId, "AuthorUser");
+
+                if (!checkAuthorUser.Succeeded)
+                {
+                    throw new UnauthorizedAccessException("User not authorized to delete Blab!");
+                }
+
+                var deletedBlab = await _blabService.DeleteBlabAsync(id)
+                    ?? throw new InvalidOperationException("Cannot delete Blab!");
+
+                return Ok(deletedBlab);
+            }
+            catch (Exception ex)
+            {
+                return ControllerHelper.HandleException(ex, _logger);
+            }
+        }
+
 
         [HttpPost("{id}/like")]
         [Authorize]

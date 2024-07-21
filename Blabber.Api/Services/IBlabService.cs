@@ -8,6 +8,7 @@ namespace Blabber.Api.Services
         Task<BlabView?> GetBlabByIdAsync(int id);
         Task<BlabView?> AddBlabAsync(BlabCreateRequest request);
         Task<BlabView?> UpdateBlabAsync(int id, BlabUpdateRequest request);
+        Task<BlabView?> DeleteBlabAsync(int id);
         Task<bool> AddBlabLikeAsync(int blabId, int authorId);
         Task<bool> RemoveBlabLikeAsync(int blabId, int authorId);
     }

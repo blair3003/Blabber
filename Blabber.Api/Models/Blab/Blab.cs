@@ -15,6 +15,8 @@ namespace Blabber.Api.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+        public bool IsDeleted { get; set; } = false;
+
         public Author? Author { get; set; }
         [InverseProperty("Likes")]
         public ICollection<Author> Liked { get; set; } = [];

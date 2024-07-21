@@ -43,16 +43,23 @@ namespace Blabber.Api.Repositories
             return author;
         }
 
-        public async Task<Author?> AddAsync(AuthorCreateRequest request)
+        public async Task<Author?> AddAsync(AuthorCreateRequest request, string applicationUserId)
         {
-            var author = request.ToAuthor();
-
-            var applicationUser = await _context.Users.FindAsync(author.ApplicationUserId);
+            var applicationUser = await _context.Users.FindAsync(applicationUserId);
 
             if (applicationUser == null)
             {
                 return null;
             }
+
+            var existingAuthor = await GetByUserIdAsync(applicationUserId);
+
+            if (existingAuthor != null)
+            {
+                return null;
+            }
+
+            var author = request.ToAuthor(applicationUserId);
 
             await _context.Authors.AddAsync(author);
             await _context.SaveChangesAsync();

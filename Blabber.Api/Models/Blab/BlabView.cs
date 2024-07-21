@@ -15,5 +15,7 @@
         public ICollection<AuthorView> Liked { get; set; } = [];
 
         public ICollection<CommentView> Comments { get; set; } = [];
+
+        public bool IsDeleted { get; set; }
     }
 }

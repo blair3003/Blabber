@@ -35,18 +35,25 @@ namespace Blabber.Api.Services
             return updatedBlab?.ToView();
         }
 
+        public async Task<BlabView?> DeleteBlabAsync(int id)
+        {
+            var deletedBlab = await _repository.DeleteAsync(id);
+
+            return deletedBlab?.ToView();
+        }
+
         public async Task<bool> AddBlabLikeAsync(int blabId, int authorId)
         {
-            var like = await _repository.AddLikeAsync(blabId, authorId);
+            var liked = await _repository.AddLikeAsync(blabId, authorId);
 
-            return like;
+            return liked;
         }
 
         public async Task<bool> RemoveBlabLikeAsync(int blabId, int authorId)
         {
-            var unlike = await _repository.RemoveLikeAsync(blabId, authorId);
+            var unliked = await _repository.RemoveLikeAsync(blabId, authorId);
 
-            return unlike;
+            return unliked;
         }
     }
 }

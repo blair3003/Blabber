@@ -8,6 +8,7 @@ namespace Blabber.Api.Repositories
         Task<Blab?> GetByIdAsync(int id);
         Task<Blab?> AddAsync(BlabCreateRequest request);
         Task<Blab?> UpdateAsync(int id, BlabUpdateRequest request);
+        Task<Blab?> DeleteAsync(int id);
         Task<bool> AddLikeAsync(int blabId, int authorId);
         Task<bool> RemoveLikeAsync(int blabId, int authorId);
     }

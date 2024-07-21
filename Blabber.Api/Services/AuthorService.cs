@@ -1,4 +1,5 @@
-﻿using Blabber.Api.Models;
+﻿using Blabber.Api.Data;
+using Blabber.Api.Models;
 using Blabber.Api.Repositories;
 
 namespace Blabber.Api.Services
@@ -35,9 +36,9 @@ namespace Blabber.Api.Services
             return author?.Id;
         }
 
-        public async Task<AuthorView?> AddAuthorAsync(AuthorCreateRequest request)
+        public async Task<AuthorView?> AddAuthorAsync(AuthorCreateRequest request, string applicationUserId)
         {
-            var newAuthor = await _repository.AddAsync(request);
+            var newAuthor = await _repository.AddAsync(request, applicationUserId);
 
             return newAuthor?.ToView();
         }

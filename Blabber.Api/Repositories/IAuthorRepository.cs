@@ -8,7 +8,7 @@ namespace Blabber.Api.Repositories
         Task<Author?> GetByIdAsync(int id);
         Task<Author?> GetByIdThinAsync(int id);
         Task<Author?> GetByUserIdAsync(string userId);
-        Task<Author?> AddAsync(AuthorCreateRequest request);
+        Task<Author?> AddAsync(AuthorCreateRequest request, string applicationUserId);
         Task<Author?> UpdateAsync(int id, AuthorUpdateRequest request);
         Task<bool> AddFollowerAsync(int authorId, int followerId);
         Task<bool> RemoveFollowerAsync(int authorId, int followerId);

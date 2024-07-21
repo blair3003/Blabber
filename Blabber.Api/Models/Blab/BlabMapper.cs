@@ -9,12 +9,13 @@ namespace Blabber.Api.Models
             return new BlabView
             {
                 Id = blab.Id,
-                Body = blab.Body,
+                Body = !blab.IsDeleted ? blab.Body : "[Removed]",
                 CreatedAt = blab.CreatedAt,
                 UpdatedAt = blab.UpdatedAt,
-                Author = blab.Author?.ToView(),
-                Liked = blab.Liked.Select(author => author.ToView()).ToList(),
-                Comments = blab.Comments.Where(comment => comment.ParentId == null).Select(comment => comment.ToView()).ToList()
+                Author = !blab.IsDeleted ? blab.Author?.ToView() : null,
+                Liked = !blab.IsDeleted ? blab.Liked.Select(author => author.ToView()).ToList() : [],
+                Comments = !blab.IsDeleted ? blab.Comments.Select(comment => comment.ToView()).ToList() : [],
+                IsDeleted = blab.IsDeleted
             };
         }
 
@@ -65,6 +66,17 @@ namespace Blabber.Api.Models
         {
             blab.Body = request.Body;
             blab.UpdatedAt = DateTime.UtcNow;
+        }
+
+        public static void DeleteBlab(this Blab blab)
+        {
+            blab.IsDeleted = true;
+            blab.UpdatedAt = DateTime.UtcNow;
+
+            foreach (var comment in blab.Comments)
+            {
+                comment.DeleteComment();
+            }
         }
     }
 }

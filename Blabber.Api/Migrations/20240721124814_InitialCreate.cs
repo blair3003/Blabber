@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Blabber.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateInitial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -189,7 +189,8 @@ namespace Blabber.Api.Migrations
                     AuthorId = table.Column<int>(type: "INTEGER", nullable: false),
                     Body = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -237,7 +238,8 @@ namespace Blabber.Api.Migrations
                     ParentId = table.Column<int>(type: "INTEGER", nullable: true),
                     Body = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -291,8 +293,8 @@ namespace Blabber.Api.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "user1", 0, "66ab3692-328c-4d7b-9133-d226a569967b", "user1@example.com", true, false, null, "USER1@EXAMPLE.COM", "USER1", null, null, false, "4e62cf81-ebca-4814-8408-732cc7c5e0d8", false, "user1" },
-                    { "user2", 0, "65572535-79a3-4ea7-b166-d4f5e37b6474", "user2@example.com", true, false, null, "USER2@EXAMPLE.COM", "USER2", null, null, false, "53a1aefe-875b-4fa1-b6c1-4b4028ac9149", false, "user2" }
+                    { "user1", 0, "7b0db684-d2d2-4886-b132-2c459dc15855", "user1@example.com", true, false, null, "USER1@EXAMPLE.COM", "USER1", null, null, false, "079d2e11-866c-4184-b68f-56245423c5cf", false, "user1" },
+                    { "user2", 0, "bfa8ccf1-3529-4c1f-bfe7-c15cb27a29cc", "user2@example.com", true, false, null, "USER2@EXAMPLE.COM", "USER2", null, null, false, "4ea305bb-200d-4141-8478-2a46289849b0", false, "user2" }
                 });
 
             migrationBuilder.InsertData(
@@ -306,15 +308,15 @@ namespace Blabber.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "Blabs",
-                columns: new[] { "Id", "AuthorId", "Body", "CreatedAt", "UpdatedAt" },
+                columns: new[] { "Id", "AuthorId", "Body", "CreatedAt", "IsDeleted", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, 1, "First blab by Author1", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5615), new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5617) },
-                    { 2, 2, "First blab by Author2", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5619), new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5619) },
-                    { 3, 1, "Second blab by Author1", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5621), new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5621) },
-                    { 4, 2, "Second blab by Author2", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5623), new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5623) },
-                    { 5, 1, "Third blab by Author1", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5624), new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5625) },
-                    { 6, 2, "Third blab by Author2", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5626), new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5627) }
+                    { 1, 1, "First blab by Author1", new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8669), false, new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8674) },
+                    { 2, 2, "First blab by Author2", new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8677), false, new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8677) },
+                    { 3, 1, "Second blab by Author1", new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8679), false, new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8680) },
+                    { 4, 2, "Second blab by Author2", new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8682), false, new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8682) },
+                    { 5, 1, "Third blab by Author1", new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8683), false, new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8684) },
+                    { 6, 2, "Third blab by Author2", new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8685), false, new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8686) }
                 });
 
             migrationBuilder.InsertData(
@@ -328,13 +330,13 @@ namespace Blabber.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "Comments",
-                columns: new[] { "Id", "AuthorId", "BlabId", "Body", "CreatedAt", "ParentId", "UpdatedAt" },
+                columns: new[] { "Id", "AuthorId", "BlabId", "Body", "CreatedAt", "IsDeleted", "ParentId", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, 2, 1, "Comment by Author2 on Blab1", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5662), null, new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5662) },
-                    { 2, 1, 2, "Comment by Author1 on Blab2", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5665), null, new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5666) },
-                    { 4, 1, 5, "Comment by Author1 on Blab5", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5670), null, new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5670) },
-                    { 5, 2, 6, "Comment by Author2 on Blab6", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5672), null, new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5672) }
+                    { 1, 2, 1, "Comment by Author2 on Blab1", new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8719), false, null, new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8720) },
+                    { 2, 1, 2, "Comment by Author1 on Blab2", new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8722), false, null, new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8723) },
+                    { 4, 1, 5, "Comment by Author1 on Blab5", new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8768), false, null, new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8768) },
+                    { 5, 2, 6, "Comment by Author2 on Blab6", new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8770), false, null, new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8770) }
                 });
 
             migrationBuilder.InsertData(
@@ -348,11 +350,11 @@ namespace Blabber.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "Comments",
-                columns: new[] { "Id", "AuthorId", "BlabId", "Body", "CreatedAt", "ParentId", "UpdatedAt" },
+                columns: new[] { "Id", "AuthorId", "BlabId", "Body", "CreatedAt", "IsDeleted", "ParentId", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 3, 1, 1, "Reply by Author1 on Blab1", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5667), 1, new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5668) },
-                    { 6, 2, 5, "Reply by Author2 on Blab5", new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5673), 4, new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5674) }
+                    { 3, 1, 1, "Reply by Author1 on Blab1", new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8765), false, 1, new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8766) },
+                    { 6, 2, 5, "Reply by Author2 on Blab5", new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8772), false, 4, new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8772) }
                 });
 
             migrationBuilder.CreateIndex(

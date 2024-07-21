@@ -27,6 +27,13 @@ namespace Blabber.Api.Services
 
             return updatedComment?.ToView();
         }
+
+        public async Task<CommentView?> DeleteCommentAsync(int id)
+        {
+            var deletedComment = await _repository.DeleteAsync(id);
+
+            return deletedComment?.ToView();
+        }
     }
 
 }

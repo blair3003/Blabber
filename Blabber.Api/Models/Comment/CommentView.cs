@@ -7,6 +7,8 @@ namespace Blabber.Api.Models
     {
         public int Id { get; set; }
 
+        public int? ParentId { get; set; }
+
         public string? Body { get; set; }
 
         public DateTime CreatedAt { get; set; }
@@ -15,6 +17,6 @@ namespace Blabber.Api.Models
 
         public AuthorView? Author { get; set; }
 
-        public ICollection<CommentView> Children { get; set; } = [];
+        public bool IsDeleted { get; set; }
     }
 }

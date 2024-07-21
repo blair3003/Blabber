@@ -10,9 +10,10 @@ namespace Blabber.Api.Repositories
 
         public async Task<(IEnumerable<Blab> Blabs, int TotalCount)> GetAsync(int pageNumber, int pageSize)
         {
-            var totalCount = await _context.Blabs.CountAsync();
+            var totalCount = await _context.Blabs.CountAsync(b => !b.IsDeleted);
 
             var blabs = await _context.Blabs
+                .Where(b => !b.IsDeleted)
                 .Include(b => b.Author)
                 .Include(b => b.Liked)
                 .Include(b => b.Comments)
@@ -27,6 +28,7 @@ namespace Blabber.Api.Repositories
         public async Task<Blab?> GetByIdAsync(int id)
         {
             var blab = await _context.Blabs
+                .Where(b => !b.IsDeleted)
                 .Include(b => b.Author)
                 .Include(b => b.Liked)
                 .Include(b => b.Comments)
@@ -61,12 +63,32 @@ namespace Blabber.Api.Repositories
 
             var existingBlab = await _context.Blabs.FindAsync(id);
 
-            if (existingBlab == null)
+            if (existingBlab == null || existingBlab.IsDeleted)
             {
                 return null;
             }
 
             existingBlab.UpdateBlab(request);
+            await _context.SaveChangesAsync();
+
+            return existingBlab;
+        }
+
+        public async Task<Blab?> DeleteAsync(int id)
+        {
+            var existingBlab = await _context.Blabs
+                .Include(b => b.Comments)
+                .FirstOrDefaultAsync(b => id == b.Id);
+
+            if (existingBlab == null || existingBlab.IsDeleted)
+            {
+                return null;
+            }
+
+            existingBlab.DeleteBlab();
+
+            //await _context.Database.ExecuteSqlRaw("DELETE FROM Likes WHERE LikesId = {0}", id);
+
             await _context.SaveChangesAsync();
 
             return existingBlab;
@@ -80,7 +102,7 @@ namespace Blabber.Api.Repositories
 
             var author = await _context.Authors.FindAsync(authorId);
 
-            if (blab == null || author == null || blab.Liked.Contains(author))
+            if (blab == null || author == null || blab.Liked.Contains(author) || blab.IsDeleted)
             {
                 return false;
             }
@@ -99,7 +121,7 @@ namespace Blabber.Api.Repositories
 
             var author = await _context.Authors.FindAsync(authorId);
 
-            if (blab == null || author == null || !blab.Liked.Contains(author))
+            if (blab == null || author == null || !blab.Liked.Contains(author) || blab.IsDeleted)
             {
                 return false;
             }

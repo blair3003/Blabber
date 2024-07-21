@@ -57,14 +57,10 @@ namespace Blabber.Api.Controllers
 
             try
             {
-                var checkAuthorUser = await _authorizationService.AuthorizeAsync(User, request.ApplicationUserId, "AuthorUser");
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                    ?? throw new AuthenticationException("User not authenticated!");
 
-                if (!checkAuthorUser.Succeeded)
-                {
-                    throw new UnauthorizedAccessException("User not authorized to create Author!");
-                }
-
-                var newAuthor = await _authorService.AddAuthorAsync(request)
+                var newAuthor = await _authorService.AddAuthorAsync(request, currentUserId)
                     ?? throw new InvalidOperationException("Cannot add Author!");
 
                 return CreatedAtAction(nameof(CreateAuthor), new { id = newAuthor.Id }, newAuthor);

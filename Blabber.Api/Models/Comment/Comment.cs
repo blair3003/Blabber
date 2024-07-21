@@ -17,6 +17,8 @@ namespace Blabber.Api.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+        public bool IsDeleted { get; set; } = false;
+
         public Blab? Blab { get; set; }
         public Author? Author { get; set; }
         public Comment? Parent { get; set; }

@@ -85,14 +85,14 @@ namespace Blabber.Api.Migrations
                         {
                             Id = "user1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "66ab3692-328c-4d7b-9133-d226a569967b",
+                            ConcurrencyStamp = "7b0db684-d2d2-4886-b132-2c459dc15855",
                             Email = "user1@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@EXAMPLE.COM",
                             NormalizedUserName = "USER1",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4e62cf81-ebca-4814-8408-732cc7c5e0d8",
+                            SecurityStamp = "079d2e11-866c-4184-b68f-56245423c5cf",
                             TwoFactorEnabled = false,
                             UserName = "user1"
                         },
@@ -100,14 +100,14 @@ namespace Blabber.Api.Migrations
                         {
                             Id = "user2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "65572535-79a3-4ea7-b166-d4f5e37b6474",
+                            ConcurrencyStamp = "bfa8ccf1-3529-4c1f-bfe7-c15cb27a29cc",
                             Email = "user2@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER2@EXAMPLE.COM",
                             NormalizedUserName = "USER2",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "53a1aefe-875b-4fa1-b6c1-4b4028ac9149",
+                            SecurityStamp = "4ea305bb-200d-4141-8478-2a46289849b0",
                             TwoFactorEnabled = false,
                             UserName = "user2"
                         });
@@ -174,6 +174,9 @@ namespace Blabber.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
 
@@ -189,48 +192,54 @@ namespace Blabber.Api.Migrations
                             Id = 1,
                             AuthorId = 1,
                             Body = "First blab by Author1",
-                            CreatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5615),
-                            UpdatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5617)
+                            CreatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8669),
+                            IsDeleted = false,
+                            UpdatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8674)
                         },
                         new
                         {
                             Id = 2,
                             AuthorId = 2,
                             Body = "First blab by Author2",
-                            CreatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5619),
-                            UpdatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5619)
+                            CreatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8677),
+                            IsDeleted = false,
+                            UpdatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8677)
                         },
                         new
                         {
                             Id = 3,
                             AuthorId = 1,
                             Body = "Second blab by Author1",
-                            CreatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5621),
-                            UpdatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5621)
+                            CreatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8679),
+                            IsDeleted = false,
+                            UpdatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8680)
                         },
                         new
                         {
                             Id = 4,
                             AuthorId = 2,
                             Body = "Second blab by Author2",
-                            CreatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5623),
-                            UpdatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5623)
+                            CreatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8682),
+                            IsDeleted = false,
+                            UpdatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8682)
                         },
                         new
                         {
                             Id = 5,
                             AuthorId = 1,
                             Body = "Third blab by Author1",
-                            CreatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5624),
-                            UpdatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5625)
+                            CreatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8683),
+                            IsDeleted = false,
+                            UpdatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8684)
                         },
                         new
                         {
                             Id = 6,
                             AuthorId = 2,
                             Body = "Third blab by Author2",
-                            CreatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5626),
-                            UpdatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5627)
+                            CreatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8685),
+                            IsDeleted = false,
+                            UpdatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8686)
                         });
                 });
 
@@ -252,6 +261,9 @@ namespace Blabber.Api.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("ParentId")
                         .HasColumnType("INTEGER");
@@ -276,8 +288,9 @@ namespace Blabber.Api.Migrations
                             AuthorId = 2,
                             BlabId = 1,
                             Body = "Comment by Author2 on Blab1",
-                            CreatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5662),
-                            UpdatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5662)
+                            CreatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8719),
+                            IsDeleted = false,
+                            UpdatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8720)
                         },
                         new
                         {
@@ -285,8 +298,9 @@ namespace Blabber.Api.Migrations
                             AuthorId = 1,
                             BlabId = 2,
                             Body = "Comment by Author1 on Blab2",
-                            CreatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5665),
-                            UpdatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5666)
+                            CreatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8722),
+                            IsDeleted = false,
+                            UpdatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8723)
                         },
                         new
                         {
@@ -294,9 +308,10 @@ namespace Blabber.Api.Migrations
                             AuthorId = 1,
                             BlabId = 1,
                             Body = "Reply by Author1 on Blab1",
-                            CreatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5667),
+                            CreatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8765),
+                            IsDeleted = false,
                             ParentId = 1,
-                            UpdatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5668)
+                            UpdatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8766)
                         },
                         new
                         {
@@ -304,8 +319,9 @@ namespace Blabber.Api.Migrations
                             AuthorId = 1,
                             BlabId = 5,
                             Body = "Comment by Author1 on Blab5",
-                            CreatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5670),
-                            UpdatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5670)
+                            CreatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8768),
+                            IsDeleted = false,
+                            UpdatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8768)
                         },
                         new
                         {
@@ -313,8 +329,9 @@ namespace Blabber.Api.Migrations
                             AuthorId = 2,
                             BlabId = 6,
                             Body = "Comment by Author2 on Blab6",
-                            CreatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5672),
-                            UpdatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5672)
+                            CreatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8770),
+                            IsDeleted = false,
+                            UpdatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8770)
                         },
                         new
                         {
@@ -322,9 +339,10 @@ namespace Blabber.Api.Migrations
                             AuthorId = 2,
                             BlabId = 5,
                             Body = "Reply by Author2 on Blab5",
-                            CreatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5673),
+                            CreatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8772),
+                            IsDeleted = false,
                             ParentId = 4,
-                            UpdatedAt = new DateTime(2024, 7, 10, 16, 59, 12, 872, DateTimeKind.Utc).AddTicks(5674)
+                            UpdatedAt = new DateTime(2024, 7, 21, 12, 48, 13, 745, DateTimeKind.Utc).AddTicks(8772)
                         });
                 });
 

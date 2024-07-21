@@ -7,5 +7,6 @@ namespace Blabber.Api.Services
         Task<CommentView?> GetCommentByIdAsync(int id);
         Task<CommentView?> AddCommentAsync(CommentCreateRequest request);
         Task<CommentView?> UpdateCommentAsync(int id, CommentUpdateRequest request);
+        Task<CommentView?> DeleteCommentAsync(int id);
     }
 }

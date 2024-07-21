@@ -127,21 +127,21 @@ namespace Blabber.Tests.Unit
             // Arrange
             var authorId = 1;
             var applicationUserId = "1";
-            var request = new AuthorCreateRequest { ApplicationUserId = applicationUserId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
+            var request = new AuthorCreateRequest { Handle = "TestHandle", DisplayName = "TestDisplayName" };
             var author = new Author { Id = authorId, ApplicationUserId = applicationUserId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
 
             _mockRepository
-                .Setup(repo => repo.AddAsync(request))
+                .Setup(repo => repo.AddAsync(request, applicationUserId))
                 .ReturnsAsync(author);
 
             // Act
-            var result = await _authorService.AddAuthorAsync(request);
+            var result = await _authorService.AddAuthorAsync(request, applicationUserId);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(authorId, result.Id);
             Assert.Equal("TestHandle", result.Handle);
-            _mockRepository.Verify(repo => repo.AddAsync(request), Times.Once);
+            _mockRepository.Verify(repo => repo.AddAsync(request, applicationUserId), Times.Once);
         }
 
         [Fact]

@@ -8,7 +8,7 @@ namespace Blabber.Api.Services
         Task<AuthorView?> GetAuthorByIdAsync(int id);
         Task<string?> GetApplicationUserIdByAuthorIdAsync(int id);
         Task<int?> GetAuthorIdByApplicationUserIdAsync(string id);
-        Task<AuthorView?> AddAuthorAsync(AuthorCreateRequest request);
+        Task<AuthorView?> AddAuthorAsync(AuthorCreateRequest request, string applicationUserId);
         Task<AuthorView?> UpdateAuthorAsync(int id, AuthorUpdateRequest request);
         Task<bool> AddAuthorFollowerAsync(int authorId, int followerId);
         Task<bool> RemoveAuthorFollowerAsync(int authorId, int followerId);

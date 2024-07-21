@@ -7,11 +7,12 @@
             return new CommentView
             {
                 Id = comment.Id,
-                Body = comment.Body,
+                ParentId = comment.ParentId,
+                Body = !comment.IsDeleted ? comment.Body : "[Removed]",
                 CreatedAt = comment.CreatedAt,
                 UpdatedAt = comment.UpdatedAt,
-                Author = comment.Author?.ToView(),
-                Children = comment.Children.Select(child => child.ToView()).ToList()
+                Author = !comment.IsDeleted ? comment.Author?.ToView() : null,
+                IsDeleted = comment.IsDeleted
             };
         }
 
@@ -26,18 +27,15 @@
             };
         }
 
-        public static CommentUpdateRequest ToCommentUpdateRequest(this Comment comment)
-        {
-            return new CommentUpdateRequest
-            {
-                Id = comment.Id,
-                Body = comment.Body
-            };
-        }
-
         public static void UpdateComment(this Comment comment, CommentUpdateRequest request)
         {
             comment.Body = request.Body;
+            comment.UpdatedAt = DateTime.UtcNow;
+        }
+
+        public static void DeleteComment(this Comment comment)
+        {
+            comment.IsDeleted = true;
             comment.UpdatedAt = DateTime.UtcNow;
         }
     }
