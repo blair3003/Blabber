@@ -46,6 +46,22 @@ namespace Blabber.Api.Controllers
             }
         }
 
+        [HttpGet("{id}/profile")]
+        public async Task<IActionResult> GetProfile(int id)
+        {
+            try
+            {
+                var result = await _authorService.GetAuthorProfileByIdAsync(id)
+                    ?? throw new KeyNotFoundException("Author not found!");
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return ControllerHelper.HandleException(ex, _logger);
+            }
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateAuthor([FromBody] AuthorCreateRequest request)

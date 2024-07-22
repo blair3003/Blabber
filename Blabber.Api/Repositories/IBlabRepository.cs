@@ -4,7 +4,7 @@ namespace Blabber.Api.Repositories
 {
     public interface IBlabRepository
     {
-        Task<(IEnumerable<Blab> Blabs, int TotalCount)> GetAsync(int pageNumber, int pageSize);
+        Task<(IEnumerable<Blab> Blabs, int TotalCount)> GetAsync(int pageNumber, int pageSize, int? authorId = null);
         Task<Blab?> GetByIdAsync(int id);
         Task<Blab?> AddAsync(BlabCreateRequest request);
         Task<Blab?> UpdateAsync(int id, BlabUpdateRequest request);

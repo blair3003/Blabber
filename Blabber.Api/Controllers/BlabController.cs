@@ -30,6 +30,20 @@ namespace Blabber.Api.Controllers
             }
         }
 
+        [HttpGet("author/{authorId}")]
+        public async Task<IActionResult> GetBlabs(int authorId, int pageNumber = 1, int pageSize = 10)
+        {
+            try
+            {
+                var result = await _blabService.GetBlabFeedAsync(pageNumber, pageSize, authorId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return ControllerHelper.HandleException(ex, _logger);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBlab(int id)
         {

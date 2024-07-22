@@ -88,7 +88,7 @@ namespace Blabber.Tests.Unit
             var author = new Author { Id = authorId, ApplicationUserId = applicationUserId, Handle = "TestHandle", DisplayName = "TestDisplayName" };
 
             _mockRepository
-                .Setup(repo => repo.GetByIdThinAsync(authorId))
+                .Setup(repo => repo.GetByIdAsync(authorId))
                 .ReturnsAsync(author);
 
             // Act
@@ -97,7 +97,7 @@ namespace Blabber.Tests.Unit
             // Assert
             Assert.NotNull(result);
             Assert.Equal(applicationUserId, result);
-            _mockRepository.Verify(repo => repo.GetByIdThinAsync(authorId), Times.Once);
+            _mockRepository.Verify(repo => repo.GetByIdAsync(authorId), Times.Once);
         }
 
         [Fact]

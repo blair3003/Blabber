@@ -8,12 +8,18 @@ namespace Blabber.Api.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<(IEnumerable<Blab> Blabs, int TotalCount)> GetAsync(int pageNumber, int pageSize)
+        public async Task<(IEnumerable<Blab> Blabs, int TotalCount)> GetAsync(int pageNumber, int pageSize, int? authorId = null)
         {
-            var totalCount = await _context.Blabs.CountAsync(b => !b.IsDeleted);
+            var query = _context.Blabs.Where(b => !b.IsDeleted);
 
-            var blabs = await _context.Blabs
-                .Where(b => !b.IsDeleted)
+            if (authorId.HasValue)
+            {
+                query = query.Where(b => b.AuthorId == authorId.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var blabs = await query
                 .Include(b => b.Author)
                 .Include(b => b.Liked)
                 .Include(b => b.Comments)

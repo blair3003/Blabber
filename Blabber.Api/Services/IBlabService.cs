@@ -4,7 +4,7 @@ namespace Blabber.Api.Services
 {
     public interface IBlabService
     {
-        Task<BlabFeed> GetBlabFeedAsync(int pageNumber, int pageSize);
+        Task<BlabFeed> GetBlabFeedAsync(int pageNumber, int pageSize, int? authorId = null);
         Task<BlabView?> GetBlabByIdAsync(int id);
         Task<BlabView?> AddBlabAsync(BlabCreateRequest request);
         Task<BlabView?> UpdateBlabAsync(int id, BlabUpdateRequest request);

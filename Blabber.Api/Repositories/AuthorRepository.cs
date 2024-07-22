@@ -20,17 +20,17 @@ namespace Blabber.Api.Repositories
 
         public async Task<Author?> GetByIdAsync(int id)
         {
-            var author = await _context.Authors
-                .Include(a => a.Following)
-                .Include(a => a.Followers)
-                .FirstOrDefaultAsync(a => id == a.Id);
+            var author = await _context.Authors.FindAsync(id);
 
             return author;
         }
 
-        public async Task<Author?> GetByIdThinAsync(int id)
+        public async Task<Author?> GetProfileByIdAsync(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
+            var author = await _context.Authors
+                .Include(a => a.Following)
+                .Include(a => a.Followers)
+                .FirstOrDefaultAsync(a => id == a.Id);
 
             return author;
         }

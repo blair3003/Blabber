@@ -30,7 +30,7 @@ namespace Blabber.Tests.Unit
             var totalCount = 3;
 
             _mockRepository
-                .Setup(repo => repo.GetAsync(pageNumber, pageSize))
+                .Setup(repo => repo.GetAsync(pageNumber, pageSize, null))
                 .ReturnsAsync((blabs, totalCount));
 
             //Act

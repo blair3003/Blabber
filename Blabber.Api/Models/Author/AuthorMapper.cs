@@ -29,6 +29,19 @@
             };
         }
 
+        public static AuthorProfile ToProfile(this Author author)
+        {
+            return new AuthorProfile
+            {
+                Id = author.Id,
+                Handle = author.Handle,
+                DisplayName = author.DisplayName,
+                DisplayPic = author.DisplayPic,
+                Following = author.Following.Select(author => author.ToView()).ToList(),
+                Followers = author.Followers.Select(author => author.ToView()).ToList()
+            };
+        }
+
         public static AuthorUpdateRequest ToAuthorUpdateRequest(this Author author)
         {
             return new AuthorUpdateRequest
